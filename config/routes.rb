@@ -1,6 +1,18 @@
 Rails.application.routes.draw do
-  devise_for :clients
-  devise_for :staffs
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  root to: "home#index"
+  root "home#index"
+  devise_for :clients, path: 'auth', path_names: { sign_in: 'login', sign_out: 'logout'}
+
+  namespace :admin do
+    root 'dashboard#index'
+    devise_for :staffs,
+               path: 'auth',
+               root: 'dashboard#index',
+               path_names: { sign_in: 'login', sign_out: 'logout'},
+               controllers: {
+                   sessions: 'admin/staffs/sessions',
+                   registrations: 'admin/staffs/registrations',
+                   passwords: 'admin/staffs/passwords',
+                   confirmations: 'admin/staffs/confirmations'
+               }
+  end
 end
