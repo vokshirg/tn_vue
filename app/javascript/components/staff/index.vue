@@ -6,7 +6,8 @@
 
 <script>
 export default {
-  data: function () {
+  name: "Staff",
+  data () {
     return {
       message: "That is ADMIN app!"
     }

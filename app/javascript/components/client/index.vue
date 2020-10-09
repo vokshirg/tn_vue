@@ -1,12 +1,12 @@
-<template>
-  <div id="client">
-    <p>{{ message }}</p>
-  </div>
+<template lang="pug">
+  #client
+    p {{ message }}
 </template>
 
 <script>
 export default {
-  data: function () {
+  name: "Client",
+  data () {
     return {
       message: "That is client app!"
     }
