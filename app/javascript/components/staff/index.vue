@@ -1,7 +1,6 @@
-<template>
-  <div id="staff">
-    <p>{{ message }}</p>
-  </div>
+<template lang="pug">
+  #staff
+    p {{ message }}
 </template>
 
 <script>
@@ -15,9 +14,9 @@ export default {
 }
 </script>
 
-<style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
+<style lang="sass">
+  p
+    font-size: 1.5em
+    text-align: center
+    color: darkgreen
 </style>

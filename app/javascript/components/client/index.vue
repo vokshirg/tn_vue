@@ -1,6 +1,6 @@
 <template lang="pug">
   #client
-    p {{ message }}
+    p.red {{ message }}
 </template>
 
 <script>
@@ -14,9 +14,11 @@ export default {
 }
 </script>
 
-<style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
+<style lang="sass">
+  p
+    font-size: 2em
+    text-align: center
+
+    &.red
+      color: #B00100
 </style>
