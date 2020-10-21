@@ -14,5 +14,7 @@ Rails.application.routes.draw do
                    passwords: 'admin/staffs/passwords',
                    confirmations: 'admin/staffs/confirmations'
                }
+
+    get :clients, to: 'clients#index', format: :as_json
   end
 end
