@@ -6,13 +6,9 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'staff' %>
   </head>
 
   <body>
-    <%= link_to 'Home', root_path %>
-    <%= link_to 'Admin', admin_root_path %>
-
-    <div id="admin"><%= yield %></div>
+    <%= javascript_pack_tag 'staff' %>
   </body>
 </html>

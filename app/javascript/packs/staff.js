@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Staff from '../components/staff'
+import  '../components/quasar'
 
 document.addEventListener('DOMContentLoaded', () => {
   const staff = new Vue({

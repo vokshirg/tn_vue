@@ -14,11 +14,12 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
   p
     font-size: 2em
     text-align: center
 
     &.red
       color: #B00100
+
 </style>

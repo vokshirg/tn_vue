@@ -1,17 +1,18 @@
 module.exports = {
-  test: /\.sass$/,
+  test: /\.s[ac]ss$/i,
   use: [
     'vue-style-loader',
+    // Translates CSS into CommonJS
     'css-loader',
+    // Compiles Sass to CSS
     {
       loader: 'sass-loader',
       options: {
-        // indentedSyntax: true,
-        // sass-loader version >= 8
         sassOptions: {
           indentedSyntax: true
         }
       }
     }
-  ]
+
+  ],
 }
