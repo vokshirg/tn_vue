@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Staff from '../components/staff'
 import  '../components/quasar'
+import  '../components/api'
+require.context('images', true)
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const staff = new Vue({

@@ -3,7 +3,7 @@
     q-toolbar
       q-btn.q-mr-sm(flat round dense icon="fas fa-bars")
       q-avatar
-        img.quasar-logo.img(src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg")
+        img.quasar-logo.img(src="~images/in-yan.png")
       q-toolbar-title Quasar Framework
 
       q-btn(flat dense) grishkov.i.a@gmail.com
