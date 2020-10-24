@@ -27,50 +27,20 @@
                 padding="sm"
                 icon="fas fa-plus"
                 label="Новый клиент"
-                @click="client_form_show = true")
+                @click="clientFormShow()")
             template( v-slot:body-cell-actions )
               td.text-right
                 q-btn(icon="fas fa-edit" icon-size='xs' padding="sm" text-color='orange-5')
 
 
-        q-dialog(v-model='client_form_show')
-          q-card(style='min-width: 450px')
-            q-card-section
-              .text-h6 Новый клиент
-            q-card-section.q-pt-none
-              form(@submit="createClient()")
-                q-input(
-                  dense
-                  v-model='new_user_data.email'
-                  placeholder='email'
-                  type="email"
-                  autofocus
-                  :rules="[val => !!val || 'Field is required', val => re.test(val) || 'email is invalid']")
-                q-input(
-                  dense
-                  v-model='new_user_data.fullname'
-                  placeholder='Полное имя'
-                  :rules="[ val => !!val && val.length > 5 || 'Required. Min length 5' ]")
-                q-input(
-                  dense
-                  type="tel"
-                  v-model='new_user_data.phone'
-                  mask="+7 (###) ### - ####"
-                  fill-mask
-                  unmasked-value
-                  lazy-rules
-                  :rules="[ val => val.length <= 14 && val.length > 9 || 'Min phone length 10 - max 14' ]")
-              q-card-actions.text-primary(align='right')
-                q-btn(flat label='Cancel' v-close-popup)
-                q-btn(flat label='Добавить' @click="createClient()")
+      client-form(ref="client_form_dialog" @add-new-client="addNewClient")
       shared-footer
 </template>
 
 <script>
 import Navbar from './../shared/navbar'
 import Footer from './../shared/footer'
-import clientForm from './clientForm'
-import axios from 'axios'
+import clientForm from './clients/clientForm'
 
 
 export default {
@@ -84,17 +54,11 @@ export default {
         rowsPerPage: 10
         // rowsNumber: xx if getting data from a server
       },
-      re: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       client_form_show: false,
       filter: '',
-      message: "That is ADMIN app!",
       clients: [],
       loading: true,
-      new_user_data: {
-        email: '',
-        fullname: '',
-        phone: ''
-      },
+
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'email', label: 'email', field: 'email'},
@@ -119,14 +83,11 @@ export default {
       }
       this.loading = false
     },
-    async createClient () {
-      this.loading = true
-      try {
-        const response = await this.$api.clients.create(this.new_user_data)
-        this.clients.push(response.data)
-      } catch (e) {
-        console.log(e.response.data);
-      }
+    addNewClient(new_user_data) {
+      this.clients.push(new_user_data)
+    },
+    clientFormShow () {
+      this.$refs.client_form_dialog.showDialog()
     }
   },
   components: {

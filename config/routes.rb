@@ -17,5 +17,6 @@ Rails.application.routes.draw do
 
     get :clients, to: 'clients#index'
     post :clients, to: 'clients#create'
+    get :current_admin, to: 'dashboard#current_admin'
   end
 end
