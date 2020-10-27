@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>VueApp</title>
+    <title>Client</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -10,14 +10,10 @@
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-
-
-
     <%= link_to 'Home', root_path %>
     <%= link_to 'Admin', admin_root_path %>
 
+    <div id="client"></div>
     <%= yield %>
   </body>
 </html>

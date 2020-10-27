@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>VueApp</title>
+    <title>Admin</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'staff' %>
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-
-
-
-    <%= link_to 'Home', root_path %>
-    <%= link_to 'Admin', admin_root_path %>
-
-    <%= yield %>
+    <%= javascript_pack_tag 'staff' %>
   </body>
 </html>

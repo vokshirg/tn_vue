@@ -2,17 +2,26 @@
   "name": "vue_app",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@quasar/extras": "^1.9.9",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.3.0",
     "axios": "^0.20.0",
+    "quasar": "^1.14.1",
+    "sass": "^1.27.0",
+    "sass-loader": "^10.0.3",
+    "source-map-loader": "^1.1.1",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.3",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.6.12",
+    "vuelidate": "^0.7.6"
   },
   "version": "0.1.0",
   "devDependencies": {
+    "pug": "^3.0.0",
+    "pug-plain-loader": "^1.0.0",
     "webpack-dev-server": "^3.11.0"
   }
 }

@@ -14,5 +14,9 @@ Rails.application.routes.draw do
                    passwords: 'admin/staffs/passwords',
                    confirmations: 'admin/staffs/confirmations'
                }
+
+    get :clients, to: 'clients#index'
+    post :clients, to: 'clients#create'
+    get :current_admin, to: 'dashboard#current_admin'
   end
 end
