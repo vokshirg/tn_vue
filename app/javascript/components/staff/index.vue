@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import Navbar from './../shared/navbar'
-import Footer from './../shared/footer'
-import clientForm from './clients/clientForm'
+import Navbar from '@shared/navbar'
+import Footer from '@shared/footer'
+import clientForm from '@staff/clients/clientForm'
 
 
 export default {

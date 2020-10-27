@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import Staff from '../components/staff'
-import  '../components/quasar'
-import  '../api'
+import Staff from '@staff'
+import  '@plugins/quasar'
+import  '@plugins/vuelidate'
+import  '@/api'
 require.context('images', true)
 
 

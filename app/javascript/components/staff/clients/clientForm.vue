@@ -10,22 +10,26 @@
             v-model='new_user_data.email'
             placeholder='email'
             type="email"
-            autofocus
-            :rules="[val => !!val || 'Field is required', val => re.test(val) || 'email is invalid']")
+            :rules="[\
+                val => $v.new_user_data.email.required || 'Field is required',\
+                val => $v.new_user_data.email.email || 'email is invalid'\
+                ]"
+            autofocus)
           q-input(
             dense
             v-model='new_user_data.fullname'
             placeholder='Полное имя'
-            :rules="[ val => !!val && val.length > 5 || 'Required. Min length 5' ]")
+            :rules="[ val => $v.new_user_data.fullname.minLength || 'Required. Min length 5' ]")
           q-input(
             dense
             type="tel"
             v-model='new_user_data.phone'
             mask="+7 (###) ### - ####"
-            fill-mask
-            unmasked-value
+            :rules="[ val => $v.new_user_data.phone.between || 'Min phone length 10 - max 14' ]"
             lazy-rules
-            :rules="[ val => val.length <= 14 && val.length > 9 || 'Min phone length 10 - max 14' ]")
+            unmasked-value
+            fill-mask)
+
         q-card-actions.text-primary(align='right')
           q-btn(flat label='Cancel' v-close-popup)
           q-btn(flat label='Добавить' @click="createClient()")
@@ -33,17 +37,36 @@
 </template>
 
 <script>
+import { required, between, email, numeric, minLength } from 'vuelidate/lib/validators'
+
+
 export default {
   name: "clientForm",
   data () {
     return {
       client_form_show: false,
-      re: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       new_user_data: {
         email: '',
         fullname: '',
         phone: ''
       },
+    }
+  },
+  validations: {
+    new_user_data: {
+      email: {
+        required,
+        email
+      },
+      fullname: {
+        required,
+        minLength: minLength(5)
+      },
+      phone: {
+        numeric,
+        required,
+        between: between(10, 14)
+      }
     }
   },
   methods: {

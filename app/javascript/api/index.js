@@ -7,7 +7,7 @@ axios.defaults.headers.common['X-CSRF-Token'] = token
 const api = {
     clients: {
         index: () => axios.get('/admin/clients'),
-        create: (new_user_data) => axios.post('/admin/clients', { client: new_user_data })
+        create: (client) => axios.post('/admin/clients', { client })
     },
     admin: {
         current_user: () => axios.get('admin/current_admin'),
