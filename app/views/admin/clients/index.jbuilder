@@ -3,4 +3,5 @@ json.array! @clients do |user|
   json.email user[:email]
   json.fullname user[:fullname]
   json.phone user[:phone]
+  json.orgs user.organizations, :id, :name, :inn
 end

@@ -1,9 +1,9 @@
 class Admin::DashboardController < ApplicationController
+  before_action :authenticate_admin_staff!
+
   layout 'admin'
   def index
   end
 
-  def current_admin
-    render json: current_admin_staff
-  end
+
 end

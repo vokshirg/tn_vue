@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   root "home#index"
   devise_for :clients, path: 'auth', path_names: { sign_in: 'login', sign_out: 'logout'}
 
+  get :current_admin, to: 'application#current_admin'
+  get :current_user, to: 'application#current_user'
+
   namespace :admin do
     root 'dashboard#index'
     devise_for :staffs,
@@ -15,8 +18,9 @@ Rails.application.routes.draw do
                    confirmations: 'admin/staffs/confirmations'
                }
 
-    get :clients, to: 'clients#index'
-    post :clients, to: 'clients#create'
-    get :current_admin, to: 'dashboard#current_admin'
+    resources :clients, only: [:index, :create, :update, :destroy]
+    resources :organizations, only: [:index, :create, :update, :destroy]
+    # get :clients, to: 'clients#index'
+    # post :clients, to: 'clients#create'
   end
 end
