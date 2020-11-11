@@ -7,6 +7,8 @@ axios.defaults.headers.common['X-CSRF-Token'] = token
 const api = {
     clients: {
         current_user: () => axios.get('current_user'),
+        orgs: () => axios.get('/organizations'),
+        logout: () => axios.delete('auth/logout'),
     },
     admin: {
         current_user: () => axios.get('current_admin'),

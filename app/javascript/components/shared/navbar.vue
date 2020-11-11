@@ -6,11 +6,13 @@
         img.quasar-logo.img(src="~images/in-yan.png")
       q-toolbar-title {{ title }}
 
-      template(v-if="currentuser != ''")
+      template(v-if="currentuser != null")
+
         q-btn(flat dense) {{ currentuser.email }}
-        q-btn(flat round dense icon="fas fa-sign-out-alt" @click="logoutAdmin()")
+        q-btn(flat round dense icon="fas fa-sign-out-alt" @click="logout()")
       template(v-else)
-        q-btn(type="a" href="admin/auth/login" flat round dense icon="fas fa-sign-in-alt")
+        q-btn(v-if="type=='client'" type="a" href="auth/login" flat round dense icon="fas fa-sign-in-alt")
+        q-btn(v-if="type=='admin'" type="a" href="admin/auth/login" flat round dense icon="fas fa-sign-in-alt")
     slot(name="tabs")
 
 </template>
@@ -22,17 +24,18 @@ export default {
     return {}
   },
   props: {
+    type: String,
     title: {
       type: String,
       default: 'Title Here'
     },
     currentuser: {
-      default: ''
+      default: null
     }
   },
   methods: {
-    logoutAdmin () {
-      this.$api.admin.logout()
+    logout () {
+      this.$emit('logout')
     },
   },
   async created () {

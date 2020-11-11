@@ -1,6 +1,10 @@
 <template lang="pug">
   q-layout(view="hHh Lpr fFf")
-    shared-header(title="Dashboard" @getuser="getCurrentUser()" :currentuser="admin")
+    shared-header(title="Dashboard"
+      @getuser="getCurrentUser()"
+      :currentuser="admin"
+      type="admin"
+      @logout="logout")
       template(v-slot:tabs)
         q-tabs(align='left' v-model="tab")
           q-tab(name="clients" label='Clients')
@@ -9,13 +13,16 @@
     //q-drawer(show-if-above v-model="left" side="left" bordered)
       // drawer content
 
-    q-page-container
+    q-page-container(v-if="admin")
       //router-view
       q-tab-panels(v-model="tab")
         q-tab-panel(name="clients")
           clients-tab
         q-tab-panel(name="orgs")
           organizations-tab
+    template(v-else)
+      p не залогинен
+      q-btn.absolute-center.vertical-middle(type='a' href="admin/auth/login" label="Войти")
 
     shared-footer
 </template>
@@ -45,6 +52,10 @@ export default {
         console.log(e)
       }
     },
+    logout() {
+      this.$api.admin.logout()
+      this.admin = null
+    }
   },
   components: {
     'shared-header': Navbar,

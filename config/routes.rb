@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get :current_admin, to: 'application#current_admin'
   get :current_user, to: 'application#current_user'
 
+  resources :organizations, only: [:index, :create, :update, :destroy]
+
   namespace :admin do
     root 'dashboard#index'
     devise_for :staffs,
