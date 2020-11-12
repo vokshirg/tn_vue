@@ -1,14 +1,15 @@
 <template lang="pug">
   q-page.q-pa-md
-    org-form( ref="org_form_dialog" @update-table="fetchOrganizations" )
+    client-form( ref="client_form_dialog" @update-table="fetchClients" )
+
     q-table(
-      title="Organizations"
-      :data="orgs"
+      title="Clients"
+      :data="clients"
       :columns="columns"
       :pagination="initialPagination"
-      row-key="id"
+      row-key="name"
       :filter="filter"
-      :loading="loading")
+      :loading="loading" )
 
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
@@ -21,8 +22,8 @@
           dense
           padding="sm"
           icon="fas fa-plus"
-          label="Добавить организацию"
-          @click="orgFormShow" )
+          label="Новый клиент"
+          @click="clientFormShow" )
 
       template( v-slot:body-cell-actions="item" )
         td.text-right
@@ -31,33 +32,33 @@
             size='xs'
             padding="sm"
             text-color='orange-5'
-            @click="orgFormShow( item.row )" )
+            @click="clientFormShow( item.row )" )
 
           q-btn(
             icon="fas fa-trash"
             size='xs'
             padding="sm"
             text-color='red-5'
-            @click="orgRemove( item.row )" )
+            @click="clientRemove( item.row )" )
 
-      template( v-slot:body-cell-clients="item" )
+      template( v-slot:body-cell-orgs="item" )
         td.text-right
           q-chip(
-            v-for="client in item.row.clients"
-            :key="client.id"
+            v-for="org in item.row.orgs"
+            :key="org.id"
             square
-            :label="client.fullname" )
+            :label="org.name" )
 
 </template>
 
 <script>
-import orgForm from "@staff/organizations/orgForm";
+import clientForm from '@admin/clients/clientForm'
 
 export default {
-  name: "OrganizationsTab",
+  name: "ClientsTab",
   data() {
     return {
-      orgs: [],
+      clients: [],
       initialPagination: {
         sortBy: 'id',
         descending: true,
@@ -67,56 +68,55 @@ export default {
       },
       columns: [
         {name: 'id', label: 'id', field: 'id'},
-        {name: 'name', label: 'name', field: 'name'},
-        {name: 'inn', label: 'inn', field: 'inn'},
-        {name: 'ogrn', label: 'ogrn', field: 'ogrn'},
-        {name: 'org_type', label: 'org_type', field: 'org_type'},
-        {name: 'clients', label: 'Clients', field: 'clients'},
+        {name: 'email', label: 'email', field: 'email'},
+        {name: 'phone', label: 'phone', field: 'phone'},
+        {name: 'fullname', label: 'fullname', field: 'fullname'},
+        {name: 'orgs', label: 'orgs', field: 'orgs'},
         {name: 'actions', label: 'actions'},
       ],
-      organization_form_show: false,
+      client_form_show: false,
       filter: '',
     }
   },
 
   components: {
-    orgForm
+    clientForm
   },
 
   methods: {
-    async fetchOrganizations () {
+    async fetchClients () {
       this.loading = true
       try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
+        const response = await this.$api.admin.clients.index()
+        this.clients = response.data
       } catch {
         this.error = true
       }
       this.loading = false
     },
 
-    async orgRemove(organization) {
+    async clientRemove(client) {
       this.loading = true
       try {
-        const response = await this.$api.admin.orgs.destroy(organization)
-        this.fetchOrganizations()
+        const response = await this.$api.admin.clients.destroy(client)
+        await this.fetchClients()
       } catch {
         this.error = true
       }
       this.loading = false
     },
 
-    addNewOrganization(new_org_data) {
-      this.orgs.push(new_org_data)
+    addNewClient(new_user_data) {
+      this.clients.push(new_user_data)
     },
 
-    orgFormShow (org) {
-      this.$refs.org_form_dialog.showDialog(org)
-    }
+    clientFormShow (client) {
+      this.$refs.client_form_dialog.showDialog(client)
+    },
   },
 
   created() {
-    this.fetchOrganizations()
+    this.fetchClients()
   },
 }
 </script>

@@ -3,16 +3,22 @@ import axios from 'axios'
 
 const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 axios.defaults.headers.common['X-CSRF-Token'] = token
+axios.defaults.headers.accept = 'application/json'
+
+const adapter = axios.create({
+    baseURL: '/',
+    headers:{}
+})
 
 const api = {
     clients: {
-        current_user: () => axios.get('current_user'),
+        current_user: () => axios.get('/current_user'),
         orgs: () => axios.get('/organizations'),
-        logout: () => axios.delete('auth/logout'),
+        logout: () => axios.delete('/auth/logout'),
     },
     admin: {
-        current_user: () => axios.get('current_admin'),
-        logout: () => axios.delete('admin/auth/logout'),
+        current_user: () => axios.get('/current_admin'),
+        logout: () => axios.delete('/admin/auth/logout'),
         clients: {
             index: () => axios.get('/admin/clients'),
             create: (client) => axios.post('/admin/clients', { client }),

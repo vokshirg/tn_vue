@@ -15,14 +15,8 @@
     //q-drawer( show-if-above v-model="left" side="left" bordered )
       // drawer content
 
-    q-page-container( v-if="admin" )
-      //router-view
-      q-tab-panels( v-model="tab" )
-        q-tab-panel( name="clients" )
-          clients-tab
-
-        q-tab-panel( name="orgs" )
-          organizations-tab
+    q-page-container(v-if="admin")
+      router-view
 
     template( v-else )
       p не залогинен
@@ -34,8 +28,8 @@
 <script>
 import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
-import clientsTab from '@staff/clients'
-import organizationsTab from '@staff/organizations'
+import clientsTab from '@admin/clients'
+import organizationsTab from '@admin/organizations'
 
 export default {
   name: "Staff",
