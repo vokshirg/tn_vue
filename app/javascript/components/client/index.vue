@@ -57,7 +57,7 @@ export default {
     return {
       client: null,
       splitterModel: 10,
-      tab: 'mails',
+      // tab: 'mails',
     }
   },
 

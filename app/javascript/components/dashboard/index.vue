@@ -8,14 +8,14 @@
       @logout="logout" )
 
       template( v-slot:tabs )
-        q-tabs( align='left' v-model="tab" )
-          q-tab( name="clients" label='Clients' )
-          q-tab( name='orgs' label='Organizations' )
+        q-tabs( align='left' )
+          q-route-tab( to="/admin/clients" label='Clients' )
+          q-route-tab( to='/admin/orgs' label='Organizations' )
 
     //q-drawer( show-if-above v-model="left" side="left" bordered )
       // drawer content
 
-    q-page-container(v-if="admin")
+    q-page-container( v-if="admin" )
       router-view
 
     template( v-else )
@@ -28,14 +28,11 @@
 <script>
 import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
-import clientsTab from '@admin/clients'
-import organizationsTab from '@admin/organizations'
 
 export default {
   name: "Staff",
   data () {
     return {
-      tab: 'clients',
       loading: true,
       admin: ''
     }
@@ -60,8 +57,6 @@ export default {
   components: {
     'shared-header': Navbar,
     'shared-footer': Footer,
-    'clients-tab': clientsTab,
-    'organizations-tab': organizationsTab,
   }
 }
 </script>

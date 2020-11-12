@@ -43,8 +43,8 @@
             multiple )
 
           q-card-actions.text-primary(align='right')
-            q-btn( flat label='Отменить' v-close-popup )
-            q-btn( flat label='Добавить' :disabled="submitStatus === 'PENDING'" )
+            q-btn(flat label='Отменить' v-close-popup)
+            q-btn(type='submit' label='Добавить' color="primary" :disabled="submitStatus === 'PENDING'")
 
         p.typo__p( v-if="submitStatus === 'OK'" ) Thanks for your submission!
         p.typo__p( v-if="submitStatus === 'ERROR'" ) Please fill the form correctly.
@@ -60,10 +60,10 @@ export default {
   name: "clientForm",
   data () {
     return {
-      client_form_show: false,
+      client_form_show: true,
       update: false,
       submitStatus: '',
-      orgs: {},
+      orgs: [],
       form_user_data: {
         email: '',
         fullname: '',
@@ -127,6 +127,7 @@ export default {
       }
       this.update = false
       this.$emit('update-table')
+      this.$router.push({ name: 'admin/clients' })
     },
 
 
@@ -147,8 +148,6 @@ export default {
       try {
         this.form_user_data.organization_ids = this.form_user_data.orgs.map(org => org.id)
         const response = await this.$api.admin.clients.create(this.form_user_data)
-        console.log(response.data)
-        console.log(this.form_user_data)
         this.clearForm()
         this.client_form_show = false
       } catch (e) {
@@ -168,10 +167,20 @@ export default {
         console.log(e);
       }
     },
+
+    getClient (id) {
+      console.log('I will catch here item via vuex: ' + id)
+    }
   },
 
   created() {
     this.fetchOrgs()
+    const id = this.$route.params.id
+    if (id !== 'new' && !isNaN(id)) {
+      this.getClient(id)
+      this.update = false
+    }
+
   }
 }
 </script>

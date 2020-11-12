@@ -1,6 +1,7 @@
 <template lang="pug">
   q-page.q-pa-md
-    org-form( ref="org_form_dialog" @update-table="fetchOrganizations" )
+    router-view( @update-table="fetchOrganizations" )
+
     q-table(
       title="Organizations"
       :data="orgs"
@@ -22,7 +23,7 @@
           padding="sm"
           icon="fas fa-plus"
           label="Добавить организацию"
-          @click="orgFormShow" )
+          @click="orgFormShow( 'new' )" )
 
       template( v-slot:body-cell-actions="item" )
         td.text-right
@@ -31,7 +32,7 @@
             size='xs'
             padding="sm"
             text-color='orange-5'
-            @click="orgFormShow( item.row )" )
+            @click="orgFormShow( item.row.id )" )
 
           q-btn(
             icon="fas fa-trash"
@@ -54,7 +55,7 @@
 import orgForm from "@admin/organizations/orgForm";
 
 export default {
-  name: "OrganizationsTab",
+  name: "AdminOrgs",
   data() {
     return {
       orgs: [],
@@ -110,8 +111,9 @@ export default {
       this.orgs.push(new_org_data)
     },
 
-    orgFormShow (org) {
-      this.$refs.org_form_dialog.showDialog(org)
+    orgFormShow (id) {
+      this.$router.push({ name: 'org', params: { id } })
+      // this.$refs.org_form_dialog.showDialog(org)
     }
   },
 

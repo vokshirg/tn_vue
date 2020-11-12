@@ -1,6 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    client-form( ref="client_form_dialog" @update-table="fetchClients" )
+    router-view( @update-table="fetchClients" )
 
     q-table(
       title="Clients"
@@ -23,7 +23,7 @@
           padding="sm"
           icon="fas fa-plus"
           label="Новый клиент"
-          @click="clientFormShow" )
+          @click="clientFormShow( 'new' )" )
 
       template( v-slot:body-cell-actions="item" )
         td.text-right
@@ -32,7 +32,7 @@
             size='xs'
             padding="sm"
             text-color='orange-5'
-            @click="clientFormShow( item.row )" )
+            @click="clientFormShow( item.row.id )" )
 
           q-btn(
             icon="fas fa-trash"
@@ -55,7 +55,7 @@
 import clientForm from '@admin/clients/clientForm'
 
 export default {
-  name: "ClientsTab",
+  name: "AdminClients",
   data() {
     return {
       clients: [],
@@ -110,8 +110,9 @@ export default {
       this.clients.push(new_user_data)
     },
 
-    clientFormShow (client) {
-      this.$refs.client_form_dialog.showDialog(client)
+    clientFormShow (id) {
+      this.$router.push({ name: 'client', params: { id } })
+      // this.$refs.client_form_dialog.showDialog(client)
     },
   },
 

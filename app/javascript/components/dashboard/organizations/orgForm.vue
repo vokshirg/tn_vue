@@ -5,7 +5,7 @@
         .text-h6 Добавить организацию
 
       q-card-section.q-pt-none
-        form( @submit="submitForm" )
+        form( @submit.prevent="submitForm" )
           q-input(
             dense
             v-model='form_org_data.inn'
@@ -58,7 +58,7 @@ export default {
   name: "organizationForm",
   data (  ) {
     return {
-      organization_form_show: false,
+      organization_form_show: true,
       update: false,
       clients: [],
       form_org_data: {
@@ -103,13 +103,13 @@ export default {
   },
 
   methods: {
-    showDialog(org) {
-      this.organization_form_show = true
-      if (org!==undefined) {
-        this.form_org_data = org
-        this.update = true
-      }
-    },
+    // showDialog(org) {
+    //   this.organization_form_show = true
+    //   if (org!==undefined) {
+    //     this.form_org_data = org
+    //     this.update = true
+    //   }
+    // },
 
     submitForm() {
       if (this.update === true) {
@@ -131,6 +131,7 @@ export default {
       }
       this.update = false
       this.$emit('update-table')
+      this.$router.push({ name: 'admin/orgs' })
     },
 
     async fetchClients () {
@@ -138,7 +139,6 @@ export default {
       try {
         const response = await this.$api.admin.clients.index()
         this.clients = response.data
-        // console.log(this.clients)
       } catch {
         this.error = true
       }
@@ -150,7 +150,6 @@ export default {
       try {
         this.form_org_data.client_ids = this.form_org_data.clients.map(client => client.id)
         const response = await this.$api.admin.orgs.create(this.form_org_data)
-        console.log(response.data);
         this.clearForm()
         this.organization_form_show = false
       } catch (e) {
@@ -170,9 +169,19 @@ export default {
         console.log(e);
       }
     },
+
+    getOrg (id) {
+      console.log('I will catch here item via vuex: ' + id)
+    }
   },
 
   created() {
+    const id = this.$route.params.id
+    if (id !== 'new' && !isNaN(id)) {
+      this.getOrg(id)
+      this.update = false
+    }
+
     this.fetchClients()
   }
 }
