@@ -5,12 +5,13 @@
       @getuser="getCurrentUser"
       :currentuser="admin"
       type="admin"
-      @logout="logout" )
+      @logout="logout")
 
       template( v-slot:tabs )
         q-tabs( align='left' )
-          q-route-tab( to="/admin/clients" label='Clients' )
-          q-route-tab( to='/admin/orgs' label='Organizations' )
+          q-route-tab( to="/admin/clients" label='Клиенты' )
+          q-route-tab( to='/admin/orgs' label='Организации' )
+          q-route-tab( to='/admin/equipments' label='Оборудование' )
 
     //q-drawer( show-if-above v-model="left" side="left" bordered )
       // drawer content

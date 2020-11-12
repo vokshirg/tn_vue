@@ -8,41 +8,49 @@
         form( @submit.prevent="submitForm" )
           q-input(
             dense
-            v-model='form_org_data.inn'
+            v-model='form_data.inn'
             hint='ИНН'
             type="number"
             :rules="[\
-              val => $v.form_org_data.inn.required || 'Field is required',\
-              val => $v.form_org_data.inn.length || 'ИНН состоит из 12 цифр'\
+              val => $v.form_data.inn.required || 'Field is required',\
+              val => $v.form_data.inn.length || 'ИНН состоит из 12 цифр'\
               ]"
             autofocus )
 
           q-input(
             dense
-            v-model='form_org_data.name'
+            v-model='form_data.name'
             hint='Название организации'
-            :rules="[ val => $v.form_org_data.name.minLength || 'Required. Min length 5' ]" )
+            :rules="[ val => $v.form_data.name.minLength || 'Required. Min length 5' ]")
 
           q-input(
             dense
-            v-model='form_org_data.ogrn'
+            v-model='form_data.ogrn'
             hint='ОГРН'
-            :rules="[ val => $v.form_org_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]" )
+            :rules="[ val => $v.form_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]")
 
           q-select(
             dense
-            v-model='form_org_data.org_type'
+            v-model='form_data.org_type'
             hint='Тип организации'
             :options="org_types"
             emit-value
             map-options )
 
           q-select(
-            v-model='form_org_data.clients'
+            v-model='form_data.clients'
             hint='Clients'
             option-value="id"
             option-label="fullname"
             :options="clients"
+            multiple )
+
+          q-select(
+            v-model='form_data.equipments'
+            hint='equipments'
+            option-value="id"
+            option-label="name"
+            :options="equipments"
             multiple )
 
           q-card-actions.text-primary( align='right' )
@@ -61,14 +69,17 @@ export default {
       organization_form_show: true,
       update: false,
       clients: [],
-      form_org_data: {
+      equipments: [],
+      form_data: {
         id: '',
         inn: '',
         name: '',
         ogrn: '',
         org_type: '',
         clients: [],
-        client_ids: []
+        client_ids: [],
+        equipments: [],
+        equipment_ids: [],
       },
       org_types: [
         {
@@ -84,7 +95,7 @@ export default {
   },
 
   validations: {
-    form_org_data: {
+    form_data: {
       inn: {
         numeric,
         required,
@@ -106,7 +117,7 @@ export default {
     // showDialog(org) {
     //   this.organization_form_show = true
     //   if (org!==undefined) {
-    //     this.form_org_data = org
+    //     this.form_data = org
     //     this.update = true
     //   }
     // },
@@ -120,14 +131,16 @@ export default {
     },
 
     clearForm() {
-      this.form_org_data = {
+      this.form_data = {
           id: '',
           inn: '',
           name: '',
           ogrn: '',
           org_type: '',
           clients: [],
-          client_ids: []
+          client_ids: [],
+          equipments: [],
+          equipment_ids: [],
       }
       this.update = false
       this.$emit('update-table')
@@ -145,11 +158,23 @@ export default {
       this.loading = false
     },
 
+    async fetchEquipments () {
+      this.loading = true
+      try {
+        const response = await this.$api.admin.equipments.index()
+        this.equipments = response.data
+      } catch {
+        this.error = true
+      }
+      this.loading = false
+    },
+
     async createOrganization () {
       this.loading = true
       try {
-        this.form_org_data.client_ids = this.form_org_data.clients.map(client => client.id)
-        const response = await this.$api.admin.orgs.create(this.form_org_data)
+        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
+        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
+        const response = await this.$api.admin.orgs.create(this.form_data)
         this.clearForm()
         this.organization_form_show = false
       } catch (e) {
@@ -160,9 +185,10 @@ export default {
     async updateOrganization() {
       this.loading = true
       try {
-        this.form_org_data.client_ids = this.form_org_data.clients.map(client => client.id)
-        const response = await this.$api.admin.orgs.update(this.form_org_data)
-        this.$emit('add-new-organization', response.data)
+        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
+        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
+        const response = await this.$api.admin.orgs.update(this.form_data)
+        // this.$emit('add-new-organization', response.data)
         this.clearForm()
         this.organization_form_show = false
       } catch (e) {
@@ -171,18 +197,21 @@ export default {
     },
 
     getOrg (id) {
-      console.log('I will catch here item via vuex: ' + id)
+      this.$api.admin.orgs.show(this.id)
+          .then(({ data }) => this.form_data = data )
+          .catch((e) => console.log(e))
     }
   },
 
   created() {
-    const id = this.$route.params.id
-    if (id !== 'new' && !isNaN(id)) {
-      this.getOrg(id)
-      this.update = false
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.getOrg()
+      this.update = true
     }
 
     this.fetchClients()
+    this.fetchEquipments()
   }
 }
 </script>

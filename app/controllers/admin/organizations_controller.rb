@@ -5,6 +5,8 @@ class Admin::OrganizationsController < ApplicationController
     @organizations = Organization.all
   end
 
+  def show; end
+
   def create
     # random_pass = Random.hex(10)
     @organization = Organization.new(permitted_params)
@@ -43,6 +45,6 @@ class Admin::OrganizationsController < ApplicationController
   end
 
   def permitted_params
-    params.require(:organization).permit(:name, :inn, :ogrn, :org_type, client_ids:[])
+    params.require(:organization).permit(:name, :inn, :ogrn, :org_type, client_ids:[], equipment_ids:[])
   end
 end

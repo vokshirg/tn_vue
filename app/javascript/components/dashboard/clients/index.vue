@@ -23,7 +23,7 @@
           padding="sm"
           icon="fas fa-plus"
           label="Новый клиент"
-          @click="clientFormShow( 'new' )" )
+          @click="formShow( 'new' )" )
 
       template( v-slot:body-cell-actions="item" )
         td.text-right
@@ -32,7 +32,7 @@
             size='xs'
             padding="sm"
             text-color='orange-5'
-            @click="clientFormShow( item.row.id )" )
+            @click="formShow( item.row.id )" )
 
           q-btn(
             icon="fas fa-trash"
@@ -52,8 +52,6 @@
 </template>
 
 <script>
-import clientForm from '@admin/clients/clientForm'
-
 export default {
   name: "AdminClients",
   data() {
@@ -77,10 +75,6 @@ export default {
       client_form_show: false,
       filter: '',
     }
-  },
-
-  components: {
-    clientForm
   },
 
   methods: {
@@ -110,7 +104,7 @@ export default {
       this.clients.push(new_user_data)
     },
 
-    clientFormShow (id) {
+    formShow (id) {
       this.$router.push({ name: 'client', params: { id } })
       // this.$refs.client_form_dialog.showDialog(client)
     },

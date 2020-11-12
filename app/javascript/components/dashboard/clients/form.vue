@@ -8,34 +8,34 @@
         form( @submit.prevent="submitForm" )
           q-input(
             dense
-            v-model='form_user_data.email'
+            v-model='form_data.email'
             hint='E-mail'
             type="email"
             :rules="[\
-                val => $v.form_user_data.email.required || 'Field is required',\
-                val => $v.form_user_data.email.email || 'email is invalid'\
+                val => $v.form_data.email.required || 'Field is required',\
+                val => $v.form_data.email.email || 'email is invalid'\
                 ]"
             autofocus )
 
           q-input(
             dense
-            v-model='form_user_data.fullname'
+            v-model='form_data.fullname'
             hint='Полное имя'
-            :rules="[ val => $v.form_user_data.fullname.minLength || 'Required. Min length 5' ]" )
+            :rules="[ val => $v.form_data.fullname.minLength || 'Required. Min length 5' ]")
 
           q-input(
             dense
             type="tel"
-            v-model='form_user_data.phone'
+            v-model='form_data.phone'
             mask="+7 (###) ### - ####"
             fill-mask
             hint="Mask: (###) ### - ####"
-            :rules="[ val => $v.form_user_data.phone.between || 'Min phone length 10 - max 14' ]"
-            unmasked-value )
+            :rules="[ val => $v.form_data.phone.between || 'Min phone length 10 - max 14' ]"
+            unmasked-value)
 
           q-select(
             dense
-            v-model='form_user_data.orgs'
+            v-model='form_data.orgs'
             hint='Organizations'
             :options="orgs"
             option-value="id"
@@ -64,7 +64,7 @@ export default {
       update: false,
       submitStatus: '',
       orgs: [],
-      form_user_data: {
+      form_data: {
         email: '',
         fullname: '',
         phone: '',
@@ -75,7 +75,7 @@ export default {
   },
 
   validations: {
-    form_user_data: {
+    form_data: {
       email: {
         required,
         email
@@ -96,7 +96,7 @@ export default {
     showDialog(client) {
       this.client_form_show = true
       if (client!==undefined) {
-        this.form_user_data = client
+        this.form_data = client
         this.update = true
       }
     },
@@ -118,7 +118,7 @@ export default {
     },
 
     clearForm() {
-      this.form_user_data = {
+      this.form_data = {
         email: '',
         fullname: '',
         phone: '',
@@ -146,8 +146,8 @@ export default {
     async createClient () {
       this.loading = true
       try {
-        this.form_user_data.organization_ids = this.form_user_data.orgs.map(org => org.id)
-        const response = await this.$api.admin.clients.create(this.form_user_data)
+        this.form_data.organization_ids = this.form_data.orgs.map(org => org.id)
+        const response = await this.$api.admin.clients.create(this.form_data)
         this.clearForm()
         this.client_form_show = false
       } catch (e) {
@@ -158,29 +158,31 @@ export default {
     async updateClient() {
       this.loading = true
       try {
-        this.form_user_data.organization_ids = this.form_user_data.orgs.map(org => org.id)
-        const response = await this.$api.admin.clients.update(this.form_user_data)
-        this.$emit('add-new-organization', response.data)
+        this.form_data.organization_ids = this.form_data.orgs.map(org => org.id)
+        const response = await this.$api.admin.clients.update(this.form_data)
+        // this.$emit('add-new-client', response.data)
         this.clearForm()
         this.client_form_show = false
       } catch (e) {
         console.log(e);
       }
     },
+    getClient () {
+      this.$api.admin.clients.show(this.id)
+          .then(({ data }) => this.form_data = data )
+          .catch((e) => console.log(e))
 
-    getClient (id) {
-      console.log('I will catch here item via vuex: ' + id)
     }
   },
 
   created() {
-    this.fetchOrgs()
-    const id = this.$route.params.id
-    if (id !== 'new' && !isNaN(id)) {
-      this.getClient(id)
-      this.update = false
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.getClient()
+      this.update = true
     }
 
+    this.fetchOrgs()
   }
 }
 </script>

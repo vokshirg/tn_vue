@@ -9,8 +9,9 @@ Rails.application.routes.draw do
     resources :organizations, only: [:index, :create, :update, :destroy]
 
     namespace :admin do
-      resources :clients, only: [:index, :create, :update, :destroy]
-      resources :organizations, only: [:index, :create, :update, :destroy]
+      resources :clients
+      resources :organizations
+      resources :equipments
     end
   end
 
