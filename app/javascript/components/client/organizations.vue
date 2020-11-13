@@ -1,4 +1,5 @@
 <template lang="pug">
+
   q-page.q-pa-md
     q-table(
       title="Organizations"
@@ -26,7 +27,10 @@
 
 <script>
 export default {
-  name: "organizationTable",
+  name: "Organizations",
+  props: {
+    client: null
+  },
   data () {
     return {
       orgs: [],

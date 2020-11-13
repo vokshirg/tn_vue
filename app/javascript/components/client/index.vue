@@ -1,5 +1,5 @@
 <template lang="pug">
-  q-layout.q-my-none( view="hHh Lpr fFf" )
+  q-layout( view="hHh Lpr fFf" )
     shared-header(
       title="Client app"
       @getuser="getCurrentUser"
@@ -10,14 +10,20 @@
     //q-drawer(show-if-above v-model="left" side="left" bordered)
       // drawer content
 
-    q-page-container.q-py-none
-      template( v-if="this.client==null" )
-        p не залогинен
-        q-btn.absolute-center.vertical-middle( type='a' href="/auth/login" label="Войти" )
+    template( v-if="this.client === null" )
+      q-card.absolute-center.vertical-middle
+        q-card-section
+          p
+            b Необходимо авторизоваться
 
-      template( v-else )
-        p Залогинен
-        organization-table
+          q-btn(
+            type='a'
+            href="/auth/login"
+            label="Войти" )
+
+    template( v-else )
+      q-page-container.q-py-none
+        router-view( :client="this.client" )
 
 
       //router-view
@@ -62,7 +68,6 @@ export default {
   },
 
   components: {
-    OrganizationTable: () => import( "@client/OrganizationTable" ),
     'shared-header': Navbar,
     'shared-footer': Footer,
   },
@@ -72,6 +77,7 @@ export default {
       try {
         const response = await this.$api.clients.current_user()
         this.client = response.data
+        console.log(this.client)
       } catch (e) {
         console.log(e)
       }
