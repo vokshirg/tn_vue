@@ -10,20 +10,19 @@
     //q-drawer(show-if-above v-model="left" side="left" bordered)
       // drawer content
 
-    template( v-if="this.client === null" )
+    template( v-if="this.client" )
+      q-page-container.q-py-none
+        router-view( :client="this.client" )
+
+
+    template( v-else )
       q-card.absolute-center.vertical-middle
         q-card-section
           p
             b Необходимо авторизоваться
 
-          q-btn(
-            type='a'
-            href="/auth/login"
-            label="Войти" )
+          q-btn( type='a' href="/auth/login" label="Войти" color="primary" )
 
-    template( v-else )
-      q-page-container.q-py-none
-        router-view( :client="this.client" )
 
 
       //router-view
