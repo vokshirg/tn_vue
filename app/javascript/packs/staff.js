@@ -2,14 +2,17 @@ import Vue from 'vue'
 import Staff from '@admin'
 import  '@plugins/quasar'
 import  '@plugins/vuelidate'
-import  '@/api'
+import  '@plugins/api'
+
 require.context('images', true)
 import router from '@plugins/vue-router'
+import store from '@plugins/store'
 
 document.addEventListener('DOMContentLoaded', () => {
   const staff = new Vue({
     render: h => h(Staff),
-    router
+    router,
+    store,
   }).$mount()
   document.body.appendChild(staff.$el)
 
