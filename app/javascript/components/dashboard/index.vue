@@ -3,7 +3,7 @@
     shared-header(
       title="Dashboard"
       @getuser="getCurrentUser"
-      :currentuser="admin"
+      :currentuser="current_admin"
       type="admin"
       @logout="logout")
 
@@ -16,7 +16,7 @@
     //q-drawer( show-if-above v-model="left" side="left" bordered )
       // drawer content
 
-    q-page-container( v-if="admin" )
+    q-page-container( v-if="current_admin" )
       router-view
 
     template( v-else )
@@ -29,25 +29,24 @@
 <script>
 import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
-
+import { mapState, mapActions } from 'vuex'
 export default {
   name: "Staff",
   data () {
     return {
       loading: true,
-      admin: ''
     }
   },
 
+  computed: {
+    ...mapState(["current_admin"])
+  },
+
   methods: {
-    async getCurrentUser () {
-      try {
-        const response = await this.$api.admin.current_user()
-        this.admin = response.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    ...mapActions({
+      getCurrentUser: "get_current_admin"
+    }),
+
 
     logout() {
       this.$api.admin.logout()

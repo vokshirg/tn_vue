@@ -61,15 +61,13 @@
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-
+import { mapState, mapActions } from 'vuex'
 export default {
   name: "organizationForm",
   data (  ) {
     return {
       organization_form_show: true,
       update: false,
-      clients: [],
-      equipments: [],
       form_data: {
         id: '',
         inn: '',
@@ -94,6 +92,13 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      clients: state => state.clients.data,
+      equipments: state => state.equipments.data
+    })
+  },
+
   validations: {
     form_data: {
       inn: {
@@ -114,13 +119,10 @@ export default {
   },
 
   methods: {
-    // showDialog(org) {
-    //   this.organization_form_show = true
-    //   if (org!==undefined) {
-    //     this.form_data = org
-    //     this.update = true
-    //   }
-    // },
+    ...mapActions({
+      fetchClients: 'clients/fetch',
+      fetchEquipments: 'equipments/fetch'
+    }),
 
     submitForm() {
       if (this.update === true) {
@@ -147,27 +149,6 @@ export default {
       this.$router.push({ name: 'admin/orgs' })
     },
 
-    async fetchClients () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.clients.index()
-        this.clients = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-    async fetchEquipments () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.equipments.index()
-        this.equipments = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
 
     async createOrganization () {
       this.loading = true
@@ -210,8 +191,11 @@ export default {
       this.update = true
     }
 
-    this.fetchClients()
-    this.fetchEquipments()
+    if (this.clients.length === 0 && this.equipments.length === 0) {
+      this.fetchClients()
+      this.fetchEquipments()
+    }
+
   }
 }
 </script>

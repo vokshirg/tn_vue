@@ -61,18 +61,13 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
+import paginationMixin from "@mixins/paginationMixin";
 export default {
   name: "AdminOrgs",
+  mixins: [paginationMixin],
   data() {
     return {
-      orgs: [],
-      initialPagination: {
-        sortBy: 'id',
-        descending: true,
-        page: 1,
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'name', label: 'name', field: 'name'},
@@ -83,22 +78,21 @@ export default {
         {name: 'equipments', label: 'Equipments', field: 'equipments'},
         {name: 'actions', label: 'actions'},
       ],
+      loading: false,
       organization_form_show: false,
-      filter: '',
     }
   },
 
+  computed: {
+    ...mapState({
+      orgs: state => state.orgs.data
+    })
+  },
+
   methods: {
-    async fetchOrganizations () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
+    ...mapActions({
+      fetchOrganizations: 'orgs/fetch'
+    }),
 
     async orgRemove(organization) {
       this.loading = true
@@ -117,7 +111,6 @@ export default {
 
     formShow (id) {
       this.$router.push({ name: 'org', params: { id } })
-      // this.$refs.org_form_dialog.showDialog(org)
     }
   },
 

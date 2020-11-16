@@ -26,22 +26,16 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+import paginationMixin from "@mixins/paginationMixin";
 export default {
   name: "Organizations",
   props: {
     client: null
   },
+  mixins: [paginationMixin],
   data () {
     return {
-      orgs: [],
-      initialPagination: {
-        sortBy: 'id',
-        descending: true,
-        page: 1,
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
-      filter: '',
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'name', label: 'name', field: 'name'},
@@ -50,20 +44,20 @@ export default {
         {name: 'org_type', label: 'org_type', field: 'org_type'},
         {name: 'clients', label: 'Clients', field: 'clients'},
       ],
+      loading: false
     }
   },
 
+  computed: {
+    ...mapState({
+      orgs: state => state.orgs.data
+    })
+  },
+
   methods: {
-    async fetchOrganizations () {
-      this.loading = true
-      try {
-        const response = await this.$api.clients.orgs()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
+    ...mapActions({
+      fetchOrganizations: 'orgs/fetch_client_orgs'
+    })
   },
 
   created() {

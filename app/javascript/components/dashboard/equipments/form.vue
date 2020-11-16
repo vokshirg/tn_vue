@@ -44,7 +44,7 @@
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "equipmentForm",
@@ -52,7 +52,6 @@ export default {
     return {
       equipment_form_show: true,
       update: false,
-      orgs: [],
       id: '',
       form_data: {
         name: '',
@@ -81,6 +80,14 @@ export default {
       ]
     }
   },
+
+  computed: {
+    ...mapState({
+      orgs: state => state.orgs.data
+    })
+  },
+
+
   validations: {
     form_data: {
       name: {
@@ -98,6 +105,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      fetchOrgs: 'orgs/fetch'
+    }),
+
     showDialog(equipment) {
       this.equipment_form_show = true
       if (equipment!==undefined) {
@@ -128,22 +139,9 @@ export default {
     },
 
 
-    async fetchOrgs () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-
     async createEquipment () {
       this.loading = true
       try {
-        console.log(this.form_data)
         this.form_data.organization_id = this.form_data.org.id
         const response = await this.$api.admin.equipments.create(this.form_data)
         console.log(response)

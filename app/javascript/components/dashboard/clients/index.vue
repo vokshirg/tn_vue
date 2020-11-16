@@ -52,18 +52,14 @@
 </template>
 
 <script>
+import paginationMixin from "@mixins/paginationMixin";
+import { mapState, mapActions } from 'vuex'
+
 export default {
   name: "AdminClients",
+  mixins: [paginationMixin],
   data() {
     return {
-      clients: [],
-      initialPagination: {
-        sortBy: 'id',
-        descending: true,
-        page: 1,
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'email', label: 'email', field: 'email'},
@@ -73,21 +69,20 @@ export default {
         {name: 'actions', label: 'actions'},
       ],
       client_form_show: false,
-      filter: '',
+      loading: false,
     }
   },
 
+  computed: {
+    ...mapState({
+      clients: state => state.clients.data
+    })
+  },
+
   methods: {
-    async fetchClients () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.clients.index()
-        this.clients = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
+    ...mapActions({
+      fetchClients: 'clients/fetch'
+    }),
 
     async clientRemove(client) {
       this.loading = true
