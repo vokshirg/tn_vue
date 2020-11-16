@@ -14,10 +14,9 @@ class Admin::Staffs::SessionsController < Devise::SessionsController
   # end
 
   # DELETE /resource/sign_out
-  def destroy
-    super
-    render json: :ok
-  end
+  # def destroy
+  #   super
+  # end
 
   # protected
 
