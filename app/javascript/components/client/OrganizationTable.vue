@@ -48,6 +48,7 @@ export default {
       ],
     }
   },
+
   methods: {
     async fetchOrganizations () {
       this.loading = true
@@ -60,6 +61,7 @@ export default {
       this.loading = false
     },
   },
+
   created() {
     this.fetchOrganizations()
   },

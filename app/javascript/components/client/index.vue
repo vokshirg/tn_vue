@@ -60,11 +60,13 @@ export default {
       tab: 'mails',
     }
   },
+
   components: {
     OrganizationTable: () => import( "@client/OrganizationTable" ),
     'shared-header': Navbar,
     'shared-footer': Footer,
   },
+
   methods: {
     async getCurrentUser() {
       try {
@@ -74,6 +76,7 @@ export default {
         console.log(e)
       }
     },
+
     logout () {
       this.$api.clients.logout()
       this.client = null

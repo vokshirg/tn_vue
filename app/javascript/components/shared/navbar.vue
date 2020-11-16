@@ -26,6 +26,7 @@ export default {
   data () {
     return {}
   },
+
   props: {
     type: String,
     title: {
@@ -36,11 +37,13 @@ export default {
       default: null
     }
   },
+
   methods: {
     logout () {
       this.$emit('logout')
     },
   },
+
   async created () {
     await this.$emit('getuser')
     console.log(this.currentuser)

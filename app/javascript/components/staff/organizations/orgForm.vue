@@ -82,6 +82,7 @@ export default {
       ]
     }
   },
+
   validations: {
     form_org_data: {
       inn: {
@@ -100,6 +101,7 @@ export default {
       }
     }
   },
+
   methods: {
     showDialog(org) {
       this.organization_form_show = true
@@ -109,7 +111,6 @@ export default {
       }
     },
 
-
     submitForm() {
       if (this.update === true) {
         this.updateOrganization()
@@ -117,7 +118,6 @@ export default {
         this.createOrganization()
       }
     },
-
 
     clearForm() {
       this.form_org_data = {
@@ -132,7 +132,6 @@ export default {
       this.update = false
       this.$emit('update-table')
     },
-
 
     async fetchClients () {
       this.loading = true
@@ -159,7 +158,6 @@ export default {
       }
     },
 
-
     async updateOrganization() {
       this.loading = true
       try {
@@ -173,6 +171,7 @@ export default {
       }
     },
   },
+
   created() {
     this.fetchClients()
   }

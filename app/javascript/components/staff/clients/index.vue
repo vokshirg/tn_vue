@@ -78,9 +78,11 @@ export default {
       filter: '',
     }
   },
+
   components: {
     clientForm
   },
+
   methods: {
     async fetchClients () {
       this.loading = true
@@ -111,8 +113,8 @@ export default {
     clientFormShow (client) {
       this.$refs.client_form_dialog.showDialog(client)
     },
-
   },
+
   created() {
     this.fetchClients()
   },

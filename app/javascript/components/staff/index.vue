@@ -37,7 +37,6 @@ import Footer from '@shared/footer'
 import clientsTab from '@staff/clients'
 import organizationsTab from '@staff/organizations'
 
-
 export default {
   name: "Staff",
   data () {
@@ -47,6 +46,7 @@ export default {
       admin: ''
     }
   },
+
   methods: {
     async getCurrentUser () {
       try {
@@ -56,11 +56,13 @@ export default {
         console.log(e)
       }
     },
+
     logout() {
       this.$api.admin.logout()
       this.admin = null
     }
   },
+
   components: {
     'shared-header': Navbar,
     'shared-footer': Footer,

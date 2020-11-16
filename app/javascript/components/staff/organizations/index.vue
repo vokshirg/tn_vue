@@ -48,7 +48,6 @@
             square
             :label="client.fullname" )
 
-
 </template>
 
 <script>
@@ -79,9 +78,11 @@ export default {
       filter: '',
     }
   },
+
   components: {
     orgForm
   },
+
   methods: {
     async fetchOrganizations () {
       this.loading = true
@@ -113,6 +114,7 @@ export default {
       this.$refs.org_form_dialog.showDialog(org)
     }
   },
+
   created() {
     this.fetchOrganizations()
   },

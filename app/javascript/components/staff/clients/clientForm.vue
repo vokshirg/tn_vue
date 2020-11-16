@@ -73,6 +73,7 @@ export default {
       },
     }
   },
+
   validations: {
     form_user_data: {
       email: {
@@ -90,6 +91,7 @@ export default {
       }
     }
   },
+
   methods: {
     showDialog(client) {
       this.client_form_show = true
@@ -166,9 +168,8 @@ export default {
         console.log(e);
       }
     },
-
-
   },
+
   created() {
     this.fetchOrgs()
   }
