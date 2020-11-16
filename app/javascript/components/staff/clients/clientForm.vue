@@ -1,10 +1,11 @@
 <template lang="pug">
-  q-dialog(v-model='client_form_show' @hide="clearForm")
-    q-card(style='min-width: 450px')
+  q-dialog( v-model='client_form_show' @hide="clearForm" )
+    q-card( style='min-width: 450px' )
       q-card-section
         .text-h6 Новый клиент
+
       q-card-section.q-pt-none
-        form(@submit.prevent="submitForm")
+        form( @submit.prevent="submitForm" )
           q-input(
             dense
             v-model='form_user_data.email'
@@ -14,13 +15,13 @@
                 val => $v.form_user_data.email.required || 'Field is required',\
                 val => $v.form_user_data.email.email || 'email is invalid'\
                 ]"
-            autofocus)
+            autofocus )
 
           q-input(
             dense
             v-model='form_user_data.fullname'
             hint='Полное имя'
-            :rules="[ val => $v.form_user_data.fullname.minLength || 'Required. Min length 5' ]")
+            :rules="[ val => $v.form_user_data.fullname.minLength || 'Required. Min length 5' ]" )
 
           q-input(
             dense
@@ -30,7 +31,7 @@
             fill-mask
             hint="Mask: (###) ### - ####"
             :rules="[ val => $v.form_user_data.phone.between || 'Min phone length 10 - max 14' ]"
-            unmasked-value)
+            unmasked-value )
 
           q-select(
             dense
@@ -39,15 +40,15 @@
             :options="orgs"
             option-value="id"
             option-label="name"
-            multiple)
+            multiple )
 
           q-card-actions.text-primary(align='right')
-            q-btn(flat label='Отменить' v-close-popup)
-            q-btn(flat label='Добавить' :disabled="submitStatus === 'PENDING'")
+            q-btn( flat label='Отменить' v-close-popup )
+            q-btn( flat label='Добавить' :disabled="submitStatus === 'PENDING'" )
 
-        p.typo__p(v-if="submitStatus === 'OK'") Thanks for your submission!
-        p.typo__p(v-if="submitStatus === 'ERROR'") Please fill the form correctly.
-        p.typo__p(v-if="submitStatus === 'PENDING'") Sending...
+        p.typo__p( v-if="submitStatus === 'OK'" ) Thanks for your submission!
+        p.typo__p( v-if="submitStatus === 'ERROR'" ) Please fill the form correctly.
+        p.typo__p( v-if="submitStatus === 'PENDING'" ) Sending...
 
 </template>
 

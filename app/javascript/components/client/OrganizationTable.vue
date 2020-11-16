@@ -7,16 +7,20 @@
       :pagination="initialPagination"
       row-key="id"
       :filter="filter"
-      :loading="loading"
-    )
+      :loading="loading" )
+
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
           template( v-slot:append )
             q-icon( name="fas fa-search" )
+
       template( v-slot:body-cell-clients="item" )
         td.text-right
-          q-chip(v-for="client in item.row.clients" :key="client.id" square :label="client.fullname")
-
+          q-chip(
+            v-for="client in item.row.clients"
+            :key="client.id"
+            square
+            :label="client.fullname" )
 
 </template>
 

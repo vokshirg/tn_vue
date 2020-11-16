@@ -1,10 +1,11 @@
 <template lang="pug">
-  q-dialog(v-model='organization_form_show' @hide="clearForm")
-    q-card(style='min-width: 450px')
+  q-dialog( v-model='organization_form_show' @hide="clearForm" )
+    q-card( style='min-width: 450px' )
       q-card-section
         .text-h6 Добавить организацию
+
       q-card-section.q-pt-none
-        form(@submit="submitForm")
+        form( @submit="submitForm" )
           q-input(
             dense
             v-model='form_org_data.inn'
@@ -14,19 +15,19 @@
               val => $v.form_org_data.inn.required || 'Field is required',\
               val => $v.form_org_data.inn.length || 'ИНН состоит из 12 цифр'\
               ]"
-            autofocus)
+            autofocus )
 
           q-input(
             dense
             v-model='form_org_data.name'
             hint='Название организации'
-            :rules="[ val => $v.form_org_data.name.minLength || 'Required. Min length 5' ]")
+            :rules="[ val => $v.form_org_data.name.minLength || 'Required. Min length 5' ]" )
 
           q-input(
             dense
             v-model='form_org_data.ogrn'
             hint='ОГРН'
-            :rules="[ val => $v.form_org_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]")
+            :rules="[ val => $v.form_org_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]" )
 
           q-select(
             dense
@@ -34,7 +35,7 @@
             hint='Тип организации'
             :options="org_types"
             emit-value
-            map-options)
+            map-options )
 
           q-select(
             v-model='form_org_data.clients'
@@ -42,11 +43,11 @@
             option-value="id"
             option-label="fullname"
             :options="clients"
-            multiple)
+            multiple )
 
-          q-card-actions.text-primary(align='right')
-            q-btn(flat label='Отменить' v-close-popup)
-            q-btn(type="submit" label='Добавить' color="primary")
+          q-card-actions.text-primary( align='right' )
+            q-btn( flat label='Отменить' v-close-popup )
+            q-btn( type="submit" label='Добавить' color="primary" )
 
 </template>
 
@@ -55,7 +56,7 @@ import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
 
 export default {
   name: "organizationForm",
-  data () {
+  data (  ) {
     return {
       organization_form_show: false,
       update: false,

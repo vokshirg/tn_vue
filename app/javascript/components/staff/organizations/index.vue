@@ -1,7 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    org-form(ref="org_form_dialog" @update-table="fetchOrganizations")
-
+    org-form( ref="org_form_dialog" @update-table="fetchOrganizations" )
     q-table(
       title="Organizations"
       :data="orgs"
@@ -9,26 +8,45 @@
       :pagination="initialPagination"
       row-key="id"
       :filter="filter"
-      :loading="loading"
-    )
+      :loading="loading")
+
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
           template( v-slot:append )
             q-icon( name="fas fa-search" )
-        q-btn.q-ml-md(push
-        color="green"
+
+        q-btn.q-ml-md(
+          push
+          color="green"
           dense
           padding="sm"
           icon="fas fa-plus"
           label="Добавить организацию"
-          @click="orgFormShow()")
+          @click="orgFormShow" )
+
       template( v-slot:body-cell-actions="item" )
         td.text-right
-          q-btn.q-mr-xs(icon="fas fa-edit" size='xs' padding="sm" text-color='orange-5' @click="orgFormShow(item.row)")
-          q-btn(icon="fas fa-trash" size='xs' padding="sm" text-color='red-5' @click="orgRemove(item.row)")
+          q-btn.q-mr-xs(
+            icon="fas fa-edit"
+            size='xs'
+            padding="sm"
+            text-color='orange-5'
+            @click="orgFormShow( item.row )" )
+
+          q-btn(
+            icon="fas fa-trash"
+            size='xs'
+            padding="sm"
+            text-color='red-5'
+            @click="orgRemove( item.row )" )
+
       template( v-slot:body-cell-clients="item" )
         td.text-right
-          q-chip(v-for="client in item.row.clients" :key="client.id" square :label="client.fullname")
+          q-chip(
+            v-for="client in item.row.clients"
+            :key="client.id"
+            square
+            :label="client.fullname" )
 
 
 </template>
@@ -70,7 +88,6 @@ export default {
       try {
         const response = await this.$api.admin.orgs.index()
         this.orgs = response.data
-        console.log(this.orgs)
       } catch {
         this.error = true
       }

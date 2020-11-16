@@ -1,6 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    client-form(ref="client_form_dialog" @update-table="fetchClients")
+    client-form( ref="client_form_dialog" @update-table="fetchClients" )
 
     q-table(
       title="Clients"
@@ -9,28 +9,45 @@
       :pagination="initialPagination"
       row-key="name"
       :filter="filter"
-      :loading="loading"
-    )
+      :loading="loading" )
+
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
           template( v-slot:append )
             q-icon( name="fas fa-search" )
-        q-btn.q-ml-md(push
+
+        q-btn.q-ml-md(
+          push
           color="green"
           dense
           padding="sm"
           icon="fas fa-plus"
           label="Новый клиент"
-          @click="clientFormShow()")
+          @click="clientFormShow" )
+
       template( v-slot:body-cell-actions="item" )
         td.text-right
-          q-btn.q-mr-xs(icon="fas fa-edit" size='xs' padding="sm" text-color='orange-5' @click="clientFormShow(item.row)")
-          q-btn(icon="fas fa-trash" size='xs' padding="sm" text-color='red-5' @click="clientRemove(item.row)")
+          q-btn.q-mr-xs(
+            icon="fas fa-edit"
+            size='xs'
+            padding="sm"
+            text-color='orange-5'
+            @click="clientFormShow( item.row )" )
+
+          q-btn(
+            icon="fas fa-trash"
+            size='xs'
+            padding="sm"
+            text-color='red-5'
+            @click="clientRemove( item.row )" )
+
       template( v-slot:body-cell-orgs="item" )
         td.text-right
-          q-chip(v-for="org in item.row.orgs" :key="org.id" square :label="org.name")
-
-
+          q-chip(
+            v-for="org in item.row.orgs"
+            :key="org.id"
+            square
+            :label="org.name" )
 
 </template>
 

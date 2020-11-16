@@ -1,19 +1,21 @@
 <template lang="pug">
-  q-layout.q-my-none(view="hHh Lpr fFf")
-    shared-header(title="Client app"
-      @getuser="getCurrentUser()"
+  q-layout.q-my-none( view="hHh Lpr fFf" )
+    shared-header(
+      title="Client app"
+      @getuser="getCurrentUser"
       :currentuser="client"
       type="client"
-      @logout="logout")
+      @logout="logout" )
 
     //q-drawer(show-if-above v-model="left" side="left" bordered)
       // drawer content
 
     q-page-container.q-py-none
-      template(v-if="this.client==null")
+      template( v-if="this.client==null" )
         p не залогинен
-        q-btn.absolute-center.vertical-middle(type='a' href="/auth/login" label="Войти")
-      template(v-else)
+        q-btn.absolute-center.vertical-middle( type='a' href="/auth/login" label="Войти" )
+
+      template( v-else )
         p Залогинен
         organization-table
 
@@ -59,7 +61,7 @@ export default {
     }
   },
   components: {
-    OrganizationTable: () => import("@client/OrganizationTable"),
+    OrganizationTable: () => import( "@client/OrganizationTable" ),
     'shared-header': Navbar,
     'shared-footer': Footer,
   },
