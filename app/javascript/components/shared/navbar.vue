@@ -46,7 +46,6 @@ export default {
 
   async created () {
     await this.$emit('getuser')
-    console.log(this.currentuser)
   }
 }
 

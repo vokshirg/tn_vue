@@ -5,6 +5,8 @@ class Admin::ClientsController < ApplicationController
     @clients = Client.all
   end
 
+  def show; end
+
   def create
     random_pass = Random.hex(10)
     @client = Client.new(permitted_params)

@@ -5,10 +5,18 @@ Rails.application.routes.draw do
   get :current_admin, to: 'application#current_admin'
   get :current_user, to: 'application#current_user'
 
-  resources :organizations, only: [:index, :create, :update, :destroy]
+  constraints -> (req) { req.format == :json } do
+    resources :organizations, only: [:index, :create, :update, :destroy]
+
+    namespace :admin do
+      resources :clients
+      resources :organizations
+      resources :equipments
+    end
+  end
 
   namespace :admin do
-    root 'dashboard#index'
+    root "dashboard#index"
     devise_for :staffs,
                path: 'auth',
                root: 'dashboard#index',
@@ -19,10 +27,8 @@ Rails.application.routes.draw do
                    passwords: 'admin/staffs/passwords',
                    confirmations: 'admin/staffs/confirmations'
                }
-
-    resources :clients, only: [:index, :create, :update, :destroy]
-    resources :organizations, only: [:index, :create, :update, :destroy]
-    # get :clients, to: 'clients#index'
-    # post :clients, to: 'clients#create'
   end
+
+  get 'admin/*slug', to: 'admin/dashboard#index'
+  get '*slug', to: 'home#index'
 end

@@ -1,6 +1,7 @@
 <template lang="pug">
   q-page.q-pa-md
-    org-form( ref="org_form_dialog" @update-table="fetchOrganizations" )
+    router-view( @update-table="fetchOrganizations" )
+
     q-table(
       title="Organizations"
       :data="orgs"
@@ -22,7 +23,7 @@
           padding="sm"
           icon="fas fa-plus"
           label="Добавить организацию"
-          @click="orgFormShow" )
+          @click="formShow( 'new' )" )
 
       template( v-slot:body-cell-actions="item" )
         td.text-right
@@ -31,7 +32,7 @@
             size='xs'
             padding="sm"
             text-color='orange-5'
-            @click="orgFormShow( item.row )" )
+            @click="formShow( item.row.id )" )
 
           q-btn(
             icon="fas fa-trash"
@@ -48,13 +49,20 @@
             square
             :label="client.fullname" )
 
+      template( v-slot:body-cell-equipments="item" )
+        td.text-right
+          q-chip(
+            v-for="eq in item.row.equipments"
+            :key="eq.id"
+            square
+            :label="eq.name" )
+
+
 </template>
 
 <script>
-import orgForm from "@staff/organizations/orgForm";
-
 export default {
-  name: "OrganizationsTab",
+  name: "AdminOrgs",
   data() {
     return {
       orgs: [],
@@ -72,15 +80,12 @@ export default {
         {name: 'ogrn', label: 'ogrn', field: 'ogrn'},
         {name: 'org_type', label: 'org_type', field: 'org_type'},
         {name: 'clients', label: 'Clients', field: 'clients'},
+        {name: 'equipments', label: 'Equipments', field: 'equipments'},
         {name: 'actions', label: 'actions'},
       ],
       organization_form_show: false,
       filter: '',
     }
-  },
-
-  components: {
-    orgForm
   },
 
   methods: {
@@ -110,8 +115,9 @@ export default {
       this.orgs.push(new_org_data)
     },
 
-    orgFormShow (org) {
-      this.$refs.org_form_dialog.showDialog(org)
+    formShow (id) {
+      this.$router.push({ name: 'org', params: { id } })
+      // this.$refs.org_form_dialog.showDialog(org)
     }
   },
 

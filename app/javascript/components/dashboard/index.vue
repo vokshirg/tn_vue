@@ -5,24 +5,19 @@
       @getuser="getCurrentUser"
       :currentuser="admin"
       type="admin"
-      @logout="logout" )
+      @logout="logout")
 
       template( v-slot:tabs )
-        q-tabs( align='left' v-model="tab" )
-          q-tab( name="clients" label='Clients' )
-          q-tab( name='orgs' label='Organizations' )
+        q-tabs( align='left' )
+          q-route-tab( to="/admin/clients" label='Клиенты' )
+          q-route-tab( to='/admin/orgs' label='Организации' )
+          q-route-tab( to='/admin/equipments' label='Оборудование' )
 
     //q-drawer( show-if-above v-model="left" side="left" bordered )
       // drawer content
 
     q-page-container( v-if="admin" )
-      //router-view
-      q-tab-panels( v-model="tab" )
-        q-tab-panel( name="clients" )
-          clients-tab
-
-        q-tab-panel( name="orgs" )
-          organizations-tab
+      router-view
 
     template( v-else )
       p не залогинен
@@ -34,14 +29,11 @@
 <script>
 import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
-import clientsTab from '@staff/clients'
-import organizationsTab from '@staff/organizations'
 
 export default {
   name: "Staff",
   data () {
     return {
-      tab: 'clients',
       loading: true,
       admin: ''
     }
@@ -66,8 +58,6 @@ export default {
   components: {
     'shared-header': Navbar,
     'shared-footer': Footer,
-    'clients-tab': clientsTab,
-    'organizations-tab': organizationsTab,
   }
 }
 </script>
