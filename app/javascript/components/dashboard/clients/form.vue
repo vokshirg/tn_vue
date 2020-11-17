@@ -54,7 +54,7 @@
 
 <script>
 import { required, between, email, numeric, minLength } from 'vuelidate/lib/validators'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: "clientForm",
@@ -63,7 +63,6 @@ export default {
       client_form_show: true,
       update: false,
       submitStatus: '',
-      orgs: [],
       form_data: {
         email: '',
         fullname: '',
@@ -92,28 +91,47 @@ export default {
     }
   },
 
-  methods: {
-    showDialog(client) {
-      this.client_form_show = true
-      if (client!==undefined) {
-        this.form_data = client
-        this.update = true
-      }
-    },
+  computed: {
+    ...mapState({
+      orgs: state => state.orgs.data
+    }),
 
-    submitForm() {
+    ...mapGetters({
+      getClient: 'clients/get_client'
+    })
+  },
+
+  methods: {
+    ...mapActions({
+      fetchOrgs: 'orgs/fetch',
+      addClient: 'clients/add_client',
+      fetchClientById: 'clients/fetch_client_by_id',
+    }),
+
+
+    async submitForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
-        // do your submit logic here
-        this.submitStatus = 'PENDING'
-        if (this.update === true) {
-          this.updateClient()
-        } else {
-          this.createClient()
+        try {
+          this.submitStatus = 'PENDING'
+          this.loading = true
+          this.form_data.organization_ids = this.form_data.orgs.map(org => org.id)
+
+          if (this.update) {
+            await this.$api.admin.clients.update(this.form_data)
+          } else {
+            await this.addClient(this.form_data)
+          }
+        } catch (e) {
+          console.log(e.response.data);
+        } finally {
+          this.loading = false
+          this.submitStatus = 'OK'
+          this.client_form_show = false
         }
-        this.submitStatus = 'OK'
+
       }
     },
 
@@ -126,59 +144,14 @@ export default {
         organization_ids: [],
       }
       this.update = false
-      this.$emit('update-table')
       this.$router.push({ name: 'admin/clients' })
     },
-
-
-    async fetchOrgs () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-
-    async createClient () {
-      this.loading = true
-      try {
-        this.form_data.organization_ids = this.form_data.orgs.map(org => org.id)
-        const response = await this.$api.admin.clients.create(this.form_data)
-        this.clearForm()
-        this.client_form_show = false
-      } catch (e) {
-        console.log(e.response.data);
-      }
-    },
-
-    async updateClient() {
-      this.loading = true
-      try {
-        this.form_data.organization_ids = this.form_data.orgs.map(org => org.id)
-        const response = await this.$api.admin.clients.update(this.form_data)
-        // this.$emit('add-new-client', response.data)
-        this.clearForm()
-        this.client_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    getClient () {
-      this.$api.admin.clients.show(this.id)
-          .then(({ data }) => this.form_data = data )
-          .catch((e) => console.log(e))
-
-    }
   },
 
   created() {
     this.id = this.$route.params.id
     if (this.id !== 'new' && !isNaN(this.id)) {
-      this.getClient()
+      this.fetchClientById(this.id).then((data) => { this.form_data = data })
       this.update = true
     }
 

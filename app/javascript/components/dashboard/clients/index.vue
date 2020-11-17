@@ -1,6 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    router-view( @update-table="fetchClients" )
+    router-view
 
     q-table(
       title="Clients"
@@ -101,7 +101,6 @@ export default {
 
     formShow (id) {
       this.$router.push({ name: 'client', params: { id } })
-      // this.$refs.client_form_dialog.showDialog(client)
     },
   },
 

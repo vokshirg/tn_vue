@@ -1,6 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    router-view(@update-table="fetchEquipments")
+    router-view
 
     q-table(
       title="Equipments"

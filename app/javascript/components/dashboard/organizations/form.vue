@@ -61,7 +61,7 @@
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: "organizationForm",
   data (  ) {
@@ -96,7 +96,11 @@ export default {
     ...mapState({
       clients: state => state.clients.data,
       equipments: state => state.equipments.data
-    })
+    }),
+
+    ...mapGetters({
+      getOrg: 'orgs/get_org',
+    }),
   },
 
   validations: {
@@ -121,14 +125,29 @@ export default {
   methods: {
     ...mapActions({
       fetchClients: 'clients/fetch',
-      fetchEquipments: 'equipments/fetch'
+      fetchEquipments: 'equipments/fetch',
+      fetchOrgById: 'orgs/fetch_org_by_id',
+      addOrg: 'orgs/add_org',
     }),
 
-    submitForm() {
-      if (this.update === true) {
-        this.updateOrganization()
-      } else {
-        this.createOrganization()
+
+    async submitForm() {
+      try {
+        this.loading = true
+        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
+        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
+
+        if (this.update === true) {
+          await this.$api.admin.orgs.update(this.form_data)
+        } else {
+          await this.addOrg(this.form_data)
+        }
+
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.loading = false
+        this.organization_form_show = false
       }
     },
 
@@ -145,51 +164,16 @@ export default {
           equipment_ids: [],
       }
       this.update = false
-      this.$emit('update-table')
       this.$router.push({ name: 'admin/orgs' })
     },
-
-
-    async createOrganization () {
-      this.loading = true
-      try {
-        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
-        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
-        const response = await this.$api.admin.orgs.create(this.form_data)
-        this.clearForm()
-        this.organization_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async updateOrganization() {
-      this.loading = true
-      try {
-        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
-        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
-        const response = await this.$api.admin.orgs.update(this.form_data)
-        // this.$emit('add-new-organization', response.data)
-        this.clearForm()
-        this.organization_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    getOrg (id) {
-      this.$api.admin.orgs.show(this.id)
-          .then(({ data }) => this.form_data = data )
-          .catch((e) => console.log(e))
-    }
   },
 
   created() {
     this.id = this.$route.params.id
-    if (this.id !== 'new' && !isNaN(this.id)) {
-      this.getOrg()
-      this.update = true
-    }
+      if (this.id !== 'new' && !isNaN(this.id)) {
+        this.update = true
+        this.fetchOrgById(this.id).then((data) => { this.form_data = data })
+      }
 
     if (this.clients.length === 0 && this.equipments.length === 0) {
       this.fetchClients()

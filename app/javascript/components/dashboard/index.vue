@@ -38,13 +38,26 @@ export default {
     }
   },
 
+  channels: {
+    OrganizationsChannel: {
+      connected() {
+        console.log('I am connected.')
+      },
+      received: (data) => {
+        console.log(this)
+        // Vue.prototype.$store.dispatch('update_orgs', data)
+      },
+    }
+  },
+
   computed: {
     ...mapState(["current_admin"])
   },
 
   methods: {
     ...mapActions({
-      getCurrentUser: "get_current_admin"
+      getCurrentUser: "get_current_admin",
+      update_orgs: 'orgs/update_orgs'
     }),
 
 
@@ -57,7 +70,15 @@ export default {
   components: {
     'shared-header': Navbar,
     'shared-footer': Footer,
-  }
+  },
+
+  created() {
+    this.$cable.subscribe({
+      channel: 'OrganizationsChannel'
+    });
+  },
+
+
 }
 </script>
 
