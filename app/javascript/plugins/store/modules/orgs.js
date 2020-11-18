@@ -4,12 +4,12 @@ const $api = Vue.prototype.$api
 export default {
     namespaced: true,
     state: {
-        data: []
+        hash: []
     },
 
     mutations: {
         SET_DATA: (state, organizations) => {
-            state.data = organizations
+            state.hash = organizations
         },
 
         // changeOrg(state, content){
@@ -23,13 +23,21 @@ export default {
         // },
 
         ADD_ORG: (state, payload) => {
-            state.data.push(payload)
+            state.hash.push(payload)
         }
     },
 
     getters: {
-        get_org: state => id => {
-            return state.data.find(org => org.id === id);
+        get_org: getters => id => {
+            return getters.hash[id];
+        },
+
+        data: state => {
+            let data = [], i
+            for (i in state.hash) {
+                data.push(state.hash[i]) ;
+            }
+            return data
         }
     },
 
@@ -55,7 +63,7 @@ export default {
 
 
         fetch_org_by_id ({ dispatch, getters, state} , id) {
-            if (state.data.length === 0) {
+            if (getters.data.length === 0) {
                 return $api.admin.orgs.show(id)
                     .then(({data}) => {
                         return data

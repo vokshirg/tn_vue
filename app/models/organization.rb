@@ -10,15 +10,17 @@ class Organization < ApplicationRecord
   }
 
 
-  after_save :broadcast
+  after_update { broadcast(:update) }
+  after_create { broadcast(:create) }
+  after_destroy { broadcast(:destroy) }
+
 
   private
 
-  def broadcast
-    ActionCable.server.broadcast('orgs', render_message(self))
+  def broadcast(type)
+    org = render_message(self)
+    ActionCable.server.broadcast('orgs', {type: type, id: self.id, org: org })
   end
-
-  private
 
   def render_message(org)
     JSON.parse ApplicationController.renderer.render(template: 'admin/organizations/show', assigns: { organization: org} )

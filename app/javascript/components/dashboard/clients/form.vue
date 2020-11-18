@@ -92,12 +92,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      orgs: state => state.orgs.data
-    }),
-
     ...mapGetters({
-      getClient: 'clients/get_client'
+      getClient: 'clients/get_client',
+      orgs: 'orgs/data'
     })
   },
 
@@ -140,7 +137,6 @@ export default {
         email: '',
         fullname: '',
         phone: '',
-        orgs: [],
         organization_ids: [],
       }
       this.update = false

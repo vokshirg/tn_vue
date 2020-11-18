@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import paginationMixin from "@mixins/paginationMixin";
 export default {
   name: "AdminOrgs",
@@ -99,7 +99,11 @@ export default {
 
   computed: {
     ...mapState({
-      orgs: state => state.orgs.data
+      // orgs: state => state.orgs.data
+    }),
+
+    ...mapGetters({
+      orgs: 'orgs/data'
     })
   },
 
