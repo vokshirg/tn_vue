@@ -12,14 +12,15 @@ export default {
             state.data = organizations
         },
 
-        changeOrg(state, content){
-            this.$cable.perform({
-                action: 'update_orgs',
-                data: {
-                    content
-                }
-            })
-        },
+        // changeOrg(state, content){
+        //     this.$cable.perform({
+        //         channel: 'OrganizationsChannel',
+        //         action: 'alert_smth',
+        //         data: {
+        //             content
+        //         }
+        //     })
+        // },
 
         ADD_ORG: (state, payload) => {
             state.data.push(payload)
@@ -33,8 +34,8 @@ export default {
     },
 
     actions: {
-        fetch: ({ commit }) => {
-            return $api.admin.orgs.index()
+        fetch: ({ commit }, filter = {pagination:{}}) => {
+            return $api.admin.orgs.index(filter)
                 .then(({ data }) => {
                     commit('SET_DATA', data)
                 })
@@ -71,9 +72,9 @@ export default {
                 })
         },
 
-        update_orgs_cable({ commit }, org) {
-            commit('changeOrg', org)
-        },
+        // update_orgs({ commit }, org) {
+        //     commit('changeOrg', org)
+        // },
 
         async add_org({ commit }, org) {
             const resp = await $api.admin.orgs.create(org)

@@ -6,10 +6,13 @@
       title="Organizations"
       :data="orgs"
       :columns="columns"
-      :pagination="initialPagination"
       row-key="id"
+      :pagination.sync="initialPagination"
+      :loading="loading"
       :filter="filter"
-      :loading="loading")
+      @request="onRequest"
+      binary-state-sort
+    )
 
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
@@ -78,9 +81,20 @@ export default {
         {name: 'equipments', label: 'Equipments', field: 'equipments'},
         {name: 'actions', label: 'actions'},
       ],
+      initialPagination: {
+        rowsNumber: 10
+      },
       loading: false,
       organization_form_show: false,
     }
+  },
+
+  mounted () {
+    // get initial data from server (1st page)
+    this.onRequest({
+      pagination: this.initialPagination,
+      filter: undefined
+    })
   },
 
   computed: {
@@ -93,6 +107,20 @@ export default {
     ...mapActions({
       fetchOrganizations: 'orgs/fetch'
     }),
+
+    async onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination
+      this.loading = true
+
+      await this.fetchOrganizations(props)
+
+      // don't forget to update local pagination object
+      this.initialPagination.page = page
+      this.initialPagination.rowsPerPage = rowsPerPage
+      this.initialPagination.sortBy = sortBy
+      this.initialPagination.descending = descending
+      this.loading = false
+    },
 
     async orgRemove(organization) {
       this.loading = true
@@ -112,10 +140,6 @@ export default {
     formShow (id) {
       this.$router.push({ name: 'org', params: { id } })
     }
-  },
-
-  created() {
-    this.fetchOrganizations()
   },
 }
 </script>

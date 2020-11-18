@@ -43,9 +43,9 @@ export default {
       connected() {
         console.log('I am connected.')
       },
-      received: (data) => {
-        console.log(this)
-        // Vue.prototype.$store.dispatch('update_orgs', data)
+      received(data) {
+        console.log(data)
+        // this.$store.dispatch('orgs/update_orgs', data)
       },
     }
   },
@@ -64,7 +64,8 @@ export default {
     logout() {
       this.$api.admin.logout()
       this.admin = null
-    }
+    },
+
   },
 
   components: {

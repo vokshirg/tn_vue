@@ -3,12 +3,19 @@ class Organization < ApplicationRecord
   has_and_belongs_to_many :clients
   has_many :equipments, dependent: :nullify
 
+  scope :search_filter, -> (q) {
+    where("name ILIKE ?", "%#{q}%")
+        .or(where("inn ILIKE ?", "%#{q}%"))
+        .or(where("ogrn ILIKE ?", "%#{q}%"))
+  }
+
+
   after_save :broadcast
 
   private
 
   def broadcast
-    ActionCable.server.broadcast('orgs', { org: render_message(self) })
+    ActionCable.server.broadcast('orgs', render_message(self))
   end
 
   private

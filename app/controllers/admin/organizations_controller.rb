@@ -2,7 +2,8 @@ class Admin::OrganizationsController < ApplicationController
   before_action :set_org, only: [:show, :edit, :update, :destroy]
 
   def index
-    @organizations = Organization.all
+    @organizations = Organization.page(params[:page]).per(params[:per])
+    @organizations = @organizations.search_filter(params[:filter]) if params[:filter].present?
   end
 
   def show; end
