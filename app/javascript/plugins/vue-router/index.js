@@ -10,6 +10,7 @@ import orgForm from '@admin/organizations/form'
 import equipmentForm from '@admin/equipments/form'
 import NotFound from '@shared/not_found'
 import organizations from '@client/organizations'
+import resetPass from '@admin/clients/resetPass'
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -25,7 +26,14 @@ export default new VueRouter({
       component: AdminClients,
       name: 'admin/clients',
       children: [
-        { path: ':id', component: clientForm, name: 'client' }
+        {
+          path: ':id',
+          component: clientForm,
+          name: 'client',
+          children: [
+            { path: 'resetPass', component: resetPass, name: 'resetPass' }
+          ]
+        }
       ]
     },
 

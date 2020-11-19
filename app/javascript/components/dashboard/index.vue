@@ -13,9 +13,6 @@
           q-route-tab( to='/admin/orgs' label='Организации' )
           q-route-tab( to='/admin/equipments' label='Оборудование' )
 
-    //q-drawer( show-if-above v-model="left" side="left" bordered )
-      // drawer content
-
     q-page-container( v-if="current_admin" )
       router-view
 
@@ -44,32 +41,13 @@ export default {
     }
   },
 
-  channels: {
-    OrganizationsChannel: {
-      connected () {
-        console.log('I am connected.')
-      },
-      received (data) {
-        // console.log(data)
-        this.update_from_socket(data)
-      }
-    }
-  },
-
   computed: {
     ...mapState(['current_admin'])
   },
 
-  created () {
-    this.$cable.subscribe({
-      channel: 'OrganizationsChannel'
-    })
-  },
-
   methods: {
     ...mapActions({
-      getCurrentUser: 'get_current_admin',
-      update_from_socket: 'orgs/update_from_socket'
+      getCurrentUser: 'get_current_admin'
     }),
 
     logout () {

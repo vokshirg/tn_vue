@@ -5,7 +5,7 @@
         .text-h6 {{ formTitle }}
 
       q-card-section.q-pt-none
-        form( @submit.prevent="submitForm" )
+        q-form( @submit.prevent="submitForm" )
           q-input(
             dense
             v-model='form_data.inn'
@@ -143,7 +143,7 @@ export default {
     this.id = this.$route.params.id
     if (this.id !== 'new' && !isNaN(this.id)) {
       this.update = true
-      Object.assign(this.form_data, await this.fetchOrgById(this.id))
+      this.form_data = await this.fetchOrgById(this.id)
     }
 
     if (this.clients.length === 0 && this.equipments.length === 0) {

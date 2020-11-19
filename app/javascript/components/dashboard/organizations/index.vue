@@ -94,18 +94,35 @@ export default {
     })
   },
 
-  mounted () {
+  channels: {
+    OrganizationsChannel: {
+      connected () {
+        console.log('I am connected.')
+      },
+      received (data) {
+        // console.log(data)
+        this.update_from_socket(data)
+      }
+    }
+  },
+
+  created () {
     // get initial data from server (1st page)
     this.filterRequest({
       pagination: this.initialPagination,
       filter: undefined
+    })
+
+    this.$cable.subscribe({
+      channel: 'OrganizationsChannel'
     })
   },
 
   methods: {
     ...mapActions({
       fetchOrganizations: 'orgs/fetch',
-      orgRemove: 'orgs/remove_org'
+      orgRemove: 'orgs/remove_org',
+      update_from_socket: 'orgs/update_from_socket'
     }),
 
     async filterRequest (props) {

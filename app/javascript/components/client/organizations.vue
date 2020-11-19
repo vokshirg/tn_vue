@@ -57,7 +57,7 @@ export default {
     })
   },
 
-  created () {
+  async created () {
     this.fetchOrganizations()
   },
 
