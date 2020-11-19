@@ -2,7 +2,7 @@
   q-dialog( v-model='client_form_show' @hide="clearForm" )
     q-card( style='min-width: 450px' )
       q-card-section
-        .text-h6 Новый клиент
+        .text-h6 {{ formTitle }}
 
       q-card-section.q-pt-none
         form( @submit.prevent="submitForm" )
@@ -44,7 +44,7 @@
 
           q-card-actions.text-primary(align='right')
             q-btn(flat label='Отменить' v-close-popup)
-            q-btn(type='submit' label='Добавить' color="primary" :disabled="submitStatus === 'PENDING'")
+            q-btn(type='submit' :label='formBtn' color="primary" :disabled="submitStatus === 'PENDING'")
 
         p.typo__p( v-if="submitStatus === 'OK'" ) Thanks for your submission!
         p.typo__p( v-if="submitStatus === 'ERROR'" ) Please fill the form correctly.
@@ -95,7 +95,23 @@ export default {
     ...mapGetters({
       getClient: 'clients/get_client',
       orgs: 'orgs/data'
-    })
+    }),
+
+    formTitle () {
+      if (this.update) {
+        return 'Обновить клиента'
+      } else {
+        return 'Новый клиент'
+      }
+    },
+
+    formBtn () {
+      if (this.update) {
+        return 'Обновить'
+      } else {
+        return 'Добавить'
+      }
+    }
   },
 
   created () {

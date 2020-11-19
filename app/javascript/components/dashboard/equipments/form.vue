@@ -2,30 +2,30 @@
   q-dialog(v-model='equipment_form_show' @hide="clearForm")
     q-card(style='min-width: 450px')
       q-card-section
-        .text-h6 Добавить Оборудование
+        .text-h6 {{formTitle}}
       q-card-section.q-pt-none
-        form(@submit.prevent="submitForm")
+        form( @submit.prevent="submitForm" )
 
           q-input(
             dense
             v-model='form_data.name'
             hint='Название'
-            :rules="[ val => $v.form_data.name.minLength && $v.form_data.name.required || 'Required. Min length 5' ]")
+            :rules="[ () => $v.form_data.name.minLength && $v.form_data.name.required || 'Required. Min length 5' ]")
 
           q-select(
             dense
             v-model='form_data.eq_type'
             hint='Тип запчасти'
             :options="eq_types"
+            :rules="[ () => $v.form_data.eq_type.required || 'Required' ]"
             emit-value
-            :rules="[ val => $v.form_data.eq_type.required || 'Required' ]"
             map-options)
 
           q-input(
             dense
             v-model='form_data.sn'
             hint="Серийный номер"
-            :rules="[ val => $v.form_data.sn.between || 'Min sn length 10 - max 14' ]")
+            :rules="[ () => $v.form_data.sn.between || 'Min sn length 10 - max 14' ]")
 
           q-select(
             dense
@@ -37,7 +37,7 @@
 
           q-card-actions.text-primary(align='right')
             q-btn(flat label='Отменить' v-close-popup)
-            q-btn(type='submit' label='Добавить' color="primary")
+            q-btn(type='submit' :label="formBtn" color="primary")
 
 </template>
 
@@ -84,7 +84,23 @@ export default {
     ...mapGetters({
       getEquipment: 'equipments/get_equipment',
       orgs: 'orgs/data'
-    })
+    }),
+
+    formTitle () {
+      if (this.update) {
+        return 'Обновить оборудование'
+      } else {
+        return 'Добавить оборудование'
+      }
+    },
+
+    formBtn () {
+      if (this.update) {
+        return 'Обновить'
+      } else {
+        return 'Добавить'
+      }
+    }
   },
 
   validations: {

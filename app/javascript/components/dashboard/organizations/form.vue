@@ -2,7 +2,7 @@
   q-dialog( v-model='organization_form_show' @hide="clearForm" )
     q-card( style='min-width: 450px' )
       q-card-section
-        .text-h6 Добавить организацию
+        .text-h6 {{ formTitle }}
 
       q-card-section.q-pt-none
         form( @submit.prevent="submitForm" )
@@ -12,8 +12,8 @@
             hint='ИНН'
             type="number"
             :rules="[\
-              val => $v.form_data.inn.required || 'Field is required',\
-              val => $v.form_data.inn.length || 'ИНН состоит из 12 цифр'\
+              () => $v.form_data.inn.required || 'Field is required',\
+              () => $v.form_data.inn.length || 'ИНН состоит из 12 цифр'\
               ]"
             autofocus )
 
@@ -21,13 +21,13 @@
             dense
             v-model='form_data.name'
             hint='Название организации'
-            :rules="[ val => $v.form_data.name.minLength || 'Required. Min length 5' ]")
+            :rules="[ () => $v.form_data.name.minLength || 'Required. Min length 5' ]")
 
           q-input(
             dense
             v-model='form_data.ogrn'
             hint='ОГРН'
-            :rules="[ val => $v.form_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]")
+            :rules="[ () => $v.form_data.ogrn.length || 'Длина ОГРН должна быть равна 13' ]")
 
           q-select(
             dense
@@ -55,7 +55,7 @@
 
           q-card-actions.text-primary( align='right' )
             q-btn( flat label='Отменить' v-close-popup )
-            q-btn( type="submit" label='Добавить' color="primary" )
+            q-btn( type="submit" :label="formBtn" color="primary" )
 
 </template>
 
@@ -100,7 +100,24 @@ export default {
 
     ...mapGetters({
       getOrg: 'orgs/get_org'
-    })
+    }),
+
+    formTitle () {
+      if (this.update) {
+        return 'Обновить организацию'
+      } else {
+        return 'Добавить организацию'
+      }
+    },
+
+    formBtn () {
+      if (this.update) {
+        return 'Обновить'
+      } else {
+        return 'Добавить'
+      }
+    }
+
   },
 
   validations: {
