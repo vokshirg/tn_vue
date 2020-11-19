@@ -63,8 +63,8 @@
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
-  name: "organizationForm",
-  data (  ) {
+  name: 'OrganizationForm',
+  data () {
     return {
       organization_form_show: true,
       update: false,
@@ -77,17 +77,17 @@ export default {
         clients: [],
         client_ids: [],
         equipments: [],
-        equipment_ids: [],
+        equipment_ids: []
       },
       org_types: [
         {
           label: 'ИП',
-          value: 'ip',
+          value: 'ip'
         },
         {
           label: 'Юр.Лицо',
-          value: 'ul',
-        },
+          value: 'ul'
+        }
       ]
     }
   },
@@ -99,8 +99,8 @@ export default {
     }),
 
     ...mapGetters({
-      getOrg: 'orgs/get_org',
-    }),
+      getOrg: 'orgs/get_org'
+    })
   },
 
   validations: {
@@ -108,7 +108,7 @@ export default {
       inn: {
         numeric,
         required,
-        length: (value) => between(12,12)(value.length),
+        length: (value) => between(12, 12)(value.length)
       },
       name: {
         required,
@@ -117,8 +117,21 @@ export default {
       ogrn: {
         numeric,
         required,
-        length: (value) => between(13,13)(value.length),
+        length: (value) => between(13, 13)(value.length)
       }
+    }
+  },
+
+  async created () {
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.update = true
+      Object.assign(this.form_data, await this.fetchOrgById(this.id))
+    }
+
+    if (this.clients.length === 0 && this.equipments.length === 0) {
+      this.fetchClients()
+      this.fetchEquipments()
     }
   },
 
@@ -127,11 +140,10 @@ export default {
       fetchClients: 'clients/fetch',
       fetchEquipments: 'equipments/fetch',
       fetchOrgById: 'orgs/fetch_org_by_id',
-      addOrg: 'orgs/add_org',
+      addOrg: 'orgs/add_org'
     }),
 
-
-    async submitForm() {
+    async submitForm () {
       try {
         this.loading = true
         console.log(this.form_data)
@@ -144,44 +156,29 @@ export default {
         } else {
           await this.addOrg(this.form_data)
         }
-
       } catch (e) {
-        console.log(e);
+        console.log(e)
       } finally {
         this.loading = false
         this.organization_form_show = false
       }
     },
 
-    clearForm() {
+    clearForm () {
       this.form_data = {
-          id: '',
-          inn: '',
-          name: '',
-          ogrn: '',
-          org_type: '',
-          clients: [],
-          client_ids: [],
-          equipments: [],
-          equipment_ids: [],
+        id: '',
+        inn: '',
+        name: '',
+        ogrn: '',
+        org_type: '',
+        clients: [],
+        client_ids: [],
+        equipments: [],
+        equipment_ids: []
       }
       this.update = false
       this.$router.push({ name: 'admin/orgs' })
-    },
-  },
-
-  async created() {
-    this.id = this.$route.params.id
-    if (this.id !== 'new' && !isNaN(this.id)) {
-      this.update = true
-      Object.assign(this.form_data, await this.fetchOrgById(this.id))
     }
-
-    if (this.clients.length === 0 && this.equipments.length === 0) {
-      this.fetchClients()
-      this.fetchEquipments()
-    }
-
   }
 }
 </script>

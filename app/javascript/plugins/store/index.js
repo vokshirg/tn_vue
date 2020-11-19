@@ -10,36 +10,36 @@ Vue.use(Vuex)
 const $api = Vue.prototype.$api
 
 export default new Vuex.Store({
-    state: {
-        current_client: null,
-        current_admin: null,
+  state: {
+    current_client: null,
+    current_admin: null
+  },
+  mutations: {
+    SET_CURRENT_CLIENT: (state, currentClient) => {
+      state.current_client = currentClient
     },
-    mutations: {
-        SET_CURRENT_CLIENT: (state, current_client) => {
-            state.current_client = current_client
-        },
-        SET_CURRENT_ADMIN: (state, current_admin) => {
-            state.current_admin = current_admin
-        }
+    SET_CURRENT_ADMIN: (state, currentAdmin) => {
+      state.current_admin = currentAdmin
+    }
+  },
+  actions: {
+    get_current_client: ({ commit }) => {
+      $api.clients.current_user()
+        .then(({ data }) => {
+          commit('SET_CURRENT_CLIENT', data)
+        })
     },
-    actions: {
-        get_current_client: ({ commit }) => {
-            $api.clients.current_user()
-                .then(({ data }) => {
-                    commit('SET_CURRENT_CLIENT', data)
-                })
-        },
-        get_current_admin: ({ commit }) => {
-            $api.admin.current_user()
-                .then(({ data }) => {
-                    commit('SET_CURRENT_ADMIN', data)
-                })
-        }
-    },
-    modules: {
-        orgs,
-        clients,
-        equipments
-    },
-    plugins: []
+    get_current_admin: ({ commit }) => {
+      $api.admin.current_user()
+        .then(({ data }) => {
+          commit('SET_CURRENT_ADMIN', data)
+        })
+    }
+  },
+  modules: {
+    orgs,
+    clients,
+    equipments
+  },
+  plugins: []
 })

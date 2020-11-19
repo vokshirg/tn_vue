@@ -64,28 +64,34 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import paginationMixin from "@mixins/paginationMixin";
+import paginationMixin from '@mixins/paginationMixin'
 export default {
-  name: "AdminOrgs",
+  name: 'AdminOrgs',
   mixins: [paginationMixin],
-  data() {
+  data () {
     return {
       columns: [
-        {name: 'id', label: 'id', field: 'id'},
-        {name: 'name', label: 'name', field: 'name'},
-        {name: 'inn', label: 'inn', field: 'inn'},
-        {name: 'ogrn', label: 'ogrn', field: 'ogrn'},
-        {name: 'org_type', label: 'org_type', field: 'org_type'},
-        {name: 'clients', label: 'Clients', field: 'clients'},
-        {name: 'equipments', label: 'Equipments', field: 'equipments'},
-        {name: 'actions', label: 'actions'},
+        { name: 'id', label: 'id', field: 'id' },
+        { name: 'name', label: 'name', field: 'name' },
+        { name: 'inn', label: 'inn', field: 'inn' },
+        { name: 'ogrn', label: 'ogrn', field: 'ogrn' },
+        { name: 'org_type', label: 'org_type', field: 'org_type' },
+        { name: 'clients', label: 'Clients', field: 'clients' },
+        { name: 'equipments', label: 'Equipments', field: 'equipments' },
+        { name: 'actions', label: 'actions' }
       ],
       initialPagination: {
         rowsNumber: 10
       },
       loading: false,
-      organization_form_show: false,
+      organization_form_show: false
     }
+  },
+
+  computed: {
+    ...mapGetters({
+      orgs: 'orgs/data'
+    })
   },
 
   mounted () {
@@ -96,19 +102,13 @@ export default {
     })
   },
 
-  computed: {
-    ...mapGetters({
-      orgs: 'orgs/data'
-    })
-  },
-
   methods: {
     ...mapActions({
       fetchOrganizations: 'orgs/fetch',
       orgRemove: 'orgs/remove_org'
     }),
 
-    async filterRequest(props) {
+    async filterRequest (props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination
       this.loading = true
 
@@ -122,13 +122,13 @@ export default {
       this.loading = false
     },
 
-    addNewOrganization(new_org_data) {
-      this.orgs.push(new_org_data)
+    addNewOrganization (newOrgData) {
+      this.orgs.push(newOrgData)
     },
 
     formShow (id) {
       this.$router.push({ name: 'org', params: { id } })
     }
-  },
+  }
 }
 </script>

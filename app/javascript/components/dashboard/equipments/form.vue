@@ -39,15 +39,14 @@
             q-btn(flat label='Отменить' v-close-popup)
             q-btn(type='submit' label='Добавить' color="primary")
 
-
 </template>
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: "equipmentForm",
+  name: 'EquipmentForm',
   data () {
     return {
       equipment_form_show: true,
@@ -63,20 +62,20 @@ export default {
       eq_types: [
         {
           label: 'Аггрегаты',
-          value: 'aggregates',
+          value: 'aggregates'
         },
         {
           label: 'Заменяемые',
-          value: 'removable',
+          value: 'removable'
         },
         {
           label: 'Мелкие',
-          value: 'small_parts',
+          value: 'small_parts'
         },
         {
           label: 'Другие',
-          value: 'other',
-        },
+          value: 'other'
+        }
       ]
     }
   },
@@ -105,6 +104,16 @@ export default {
     }
   },
 
+  created () {
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.fetchEquipmentById(this.id).then((data) => { this.form_data = data })
+      this.update = true
+    }
+
+    this.fetchOrgs()
+  },
+
   methods: {
     ...mapActions({
       fetchOrgs: 'orgs/fetch',
@@ -112,7 +121,7 @@ export default {
       fetchEquipmentById: 'equipments/fetch_equipments_by_id'
     }),
 
-    async submitForm() {
+    async submitForm () {
       try {
         this.loading = true
         this.form_data.organization_id = this.form_data.org.id
@@ -121,36 +130,25 @@ export default {
         } else {
           await this.addEquipment(this.form_data)
         }
-
       } catch (e) {
-        console.log(e);
+        console.log(e)
       } finally {
-
         this.loading = false
         this.equipment_form_show = false
       }
     },
 
-    clearForm() {
+    clearForm () {
       this.form_data = {
         email: '',
         name: '',
         sn: '',
-        organization_id: '',
+        organization_id: ''
       }
       this.update = false
       this.$router.push({ name: 'admin/equipments' })
-    },
-
-  },
-  created() {
-    this.id = this.$route.params.id
-    if (this.id !== 'new' && !isNaN(this.id)) {
-      this.fetchEquipmentById(this.id).then((data) => { this.form_data = data })
-      this.update = true
     }
 
-    this.fetchOrgs()
   }
 }
 </script>

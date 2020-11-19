@@ -52,24 +52,24 @@
 </template>
 
 <script>
-import paginationMixin from "@mixins/paginationMixin";
+import paginationMixin from '@mixins/paginationMixin'
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: "AdminClients",
+  name: 'AdminClients',
   mixins: [paginationMixin],
-  data() {
+  data () {
     return {
       columns: [
-        {name: 'id', label: 'id', field: 'id'},
-        {name: 'email', label: 'email', field: 'email'},
-        {name: 'phone', label: 'phone', field: 'phone'},
-        {name: 'fullname', label: 'fullname', field: 'fullname'},
-        {name: 'orgs', label: 'orgs', field: 'orgs'},
-        {name: 'actions', label: 'actions'},
+        { name: 'id', label: 'id', field: 'id' },
+        { name: 'email', label: 'email', field: 'email' },
+        { name: 'phone', label: 'phone', field: 'phone' },
+        { name: 'fullname', label: 'fullname', field: 'fullname' },
+        { name: 'orgs', label: 'orgs', field: 'orgs' },
+        { name: 'actions', label: 'actions' }
       ],
       client_form_show: false,
-      loading: false,
+      loading: false
     }
   },
 
@@ -79,15 +79,19 @@ export default {
     })
   },
 
+  created () {
+    this.fetchClients()
+  },
+
   methods: {
     ...mapActions({
       fetchClients: 'clients/fetch'
     }),
 
-    async clientRemove(client) {
+    async clientRemove (client) {
       this.loading = true
       try {
-        const response = await this.$api.admin.clients.destroy(client)
+        await this.$api.admin.clients.destroy(client)
         await this.fetchClients()
       } catch {
         this.error = true
@@ -95,17 +99,10 @@ export default {
       this.loading = false
     },
 
-    addNewClient(new_user_data) {
-      this.clients.push(new_user_data)
-    },
-
     formShow (id) {
       this.$router.push({ name: 'client', params: { id } })
-    },
-  },
+    }
+  }
 
-  created() {
-    this.fetchClients()
-  },
 }
 </script>

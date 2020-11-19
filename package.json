@@ -1,6 +1,10 @@
 {
   "name": "vue_app",
+  "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "lint": "vue-cli-service lint"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@quasar/extras": "^1.9.9",
@@ -8,8 +12,11 @@
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.3.0",
+    "@vue/cli": "^4.5.9",
+    "@vue/eslint-config-standard": "^5.1.2",
     "actioncable-vue": "^2.3.2",
     "axios": "^0.20.0",
+    "dotenv": "^8.2.0",
     "quasar": "^1.14.1",
     "sass": "^1.27.0",
     "sass-loader": "^10.0.3",
@@ -21,8 +28,15 @@
     "vuelidate": "^0.7.6",
     "vuex": "^3.5.1"
   },
-  "version": "0.1.0",
   "devDependencies": {
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "eslint": "^7.13.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^7.1.0",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.0.0",
     "webpack-dev-server": "^3.11.0"

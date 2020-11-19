@@ -26,23 +26,26 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
-import paginationMixin from "@mixins/paginationMixin";
+import { mapActions, mapGetters } from 'vuex'
+import paginationMixin from '@mixins/paginationMixin'
 export default {
-  name: "Organizations",
-  props: {
-    client: null
-  },
+  name: 'Organizations',
   mixins: [paginationMixin],
+  props: {
+    client: {
+      type: Object,
+      default: null
+    }
+  },
   data () {
     return {
       columns: [
-        {name: 'id', label: 'id', field: 'id'},
-        {name: 'name', label: 'name', field: 'name'},
-        {name: 'inn', label: 'inn', field: 'inn'},
-        {name: 'ogrn', label: 'ogrn', field: 'ogrn'},
-        {name: 'org_type', label: 'org_type', field: 'org_type'},
-        {name: 'clients', label: 'Clients', field: 'clients'},
+        { name: 'id', label: 'id', field: 'id' },
+        { name: 'name', label: 'name', field: 'name' },
+        { name: 'inn', label: 'inn', field: 'inn' },
+        { name: 'ogrn', label: 'ogrn', field: 'ogrn' },
+        { name: 'org_type', label: 'org_type', field: 'org_type' },
+        { name: 'clients', label: 'Clients', field: 'clients' }
       ],
       loading: false
     }
@@ -54,14 +57,15 @@ export default {
     })
   },
 
+  created () {
+    this.fetchOrganizations()
+  },
+
   methods: {
     ...mapActions({
       fetchOrganizations: 'orgs/fetch_client_orgs'
     })
-  },
+  }
 
-  created() {
-    this.fetchOrganizations()
-  },
 }
 </script>

@@ -12,8 +12,8 @@
             hint='E-mail'
             type="email"
             :rules="[\
-                val => $v.form_data.email.required || 'Field is required',\
-                val => $v.form_data.email.email || 'email is invalid'\
+                () => $v.form_data.email.required || 'Field is required',\
+                () => $v.form_data.email.email || 'email is invalid'\
                 ]"
             autofocus )
 
@@ -21,7 +21,7 @@
             dense
             v-model='form_data.fullname'
             hint='Полное имя'
-            :rules="[ val => $v.form_data.fullname.minLength || 'Required. Min length 5' ]")
+            :rules="[ () => $v.form_data.fullname.minLength || 'Required. Min length 5' ]")
 
           q-input(
             dense
@@ -30,7 +30,7 @@
             mask="+7 (###) ### - ####"
             fill-mask
             hint="Mask: (###) ### - ####"
-            :rules="[ val => $v.form_data.phone.between || 'Min phone length 10 - max 14' ]"
+            :rules="[ () => $v.form_data.phone.between || 'Min phone length 10 - max 14' ]"
             unmasked-value)
 
           q-select(
@@ -54,10 +54,10 @@
 
 <script>
 import { required, between, email, numeric, minLength } from 'vuelidate/lib/validators'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: "clientForm",
+  name: 'ClientForm',
   data () {
     return {
       client_form_show: true,
@@ -69,7 +69,7 @@ export default {
         phone: '',
         orgs: [],
         organization_ids: []
-      },
+      }
     }
   },
 
@@ -98,15 +98,24 @@ export default {
     })
   },
 
+  created () {
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.fetchClientById(this.id).then((data) => { this.form_data = data })
+      this.update = true
+    }
+
+    this.fetchOrgs()
+  },
+
   methods: {
     ...mapActions({
       fetchOrgs: 'orgs/fetch',
       addClient: 'clients/add_client',
-      fetchClientById: 'clients/fetch_client_by_id',
+      fetchClientById: 'clients/fetch_client_by_id'
     }),
 
-
-    async submitForm() {
+    async submitForm () {
       this.$v.$touch()
       if (this.$v.$invalid) {
         this.submitStatus = 'ERROR'
@@ -122,36 +131,26 @@ export default {
             await this.addClient(this.form_data)
           }
         } catch (e) {
-          console.log(e.response.data);
+          console.log(e.response.data)
         } finally {
           this.loading = false
           this.submitStatus = 'OK'
           this.client_form_show = false
         }
-
       }
     },
 
-    clearForm() {
+    clearForm () {
       this.form_data = {
         email: '',
         fullname: '',
         phone: '',
-        organization_ids: [],
+        organization_ids: []
       }
       this.update = false
       this.$router.push({ name: 'admin/clients' })
-    },
-  },
-
-  created() {
-    this.id = this.$route.params.id
-    if (this.id !== 'new' && !isNaN(this.id)) {
-      this.fetchClientById(this.id).then((data) => { this.form_data = data })
-      this.update = true
     }
-
-    this.fetchOrgs()
   }
+
 }
 </script>

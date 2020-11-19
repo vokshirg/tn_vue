@@ -23,29 +23,34 @@
 <script>
 export default {
   name: 'Navbar',
-  data () {
-    return {}
-  },
 
   props: {
-    type: String,
+    type: {
+      type: String,
+      default: 'client'
+    },
     title: {
       type: String,
       default: 'Title Here'
     },
     currentuser: {
+      type: Object,
       default: null
     }
+  },
+
+  data () {
+    return {}
+  },
+
+  async created () {
+    await this.$emit('getuser')
   },
 
   methods: {
     logout () {
       this.$emit('logout')
-    },
-  },
-
-  async created () {
-    await this.$emit('getuser')
+    }
   }
 }
 

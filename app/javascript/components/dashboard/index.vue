@@ -31,55 +31,54 @@ import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
 import { mapState, mapActions } from 'vuex'
 export default {
-  name: "Staff",
+  name: 'Staff',
+
+  components: {
+    'shared-header': Navbar,
+    'shared-footer': Footer
+  },
+
   data () {
     return {
-      loading: true,
+      loading: true
     }
   },
 
   channels: {
     OrganizationsChannel: {
-      connected() {
+      connected () {
         console.log('I am connected.')
       },
-      received(data) {
+      received (data) {
         // console.log(data)
         this.update_from_socket(data)
-      },
+      }
     }
   },
 
   computed: {
-    ...mapState(["current_admin"])
+    ...mapState(['current_admin'])
+  },
+
+  created () {
+    this.$cable.subscribe({
+      channel: 'OrganizationsChannel'
+    })
   },
 
   methods: {
     ...mapActions({
-      getCurrentUser: "get_current_admin",
+      getCurrentUser: 'get_current_admin',
       update_from_socket: 'orgs/update_from_socket'
     }),
 
-
-    logout() {
+    logout () {
       this.$api.admin.logout()
       this.admin = null
-    },
+      this.$router.replace('/admin/auth/login')
+    }
 
-  },
-
-  components: {
-    'shared-header': Navbar,
-    'shared-footer': Footer,
-  },
-
-  created() {
-    this.$cable.subscribe({
-      channel: 'OrganizationsChannel'
-    });
-  },
-
-
+  }
 }
 </script>
 

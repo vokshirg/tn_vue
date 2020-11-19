@@ -1,5 +1,5 @@
 build: {
-    chainWebpack (chain) {
+    chainWebpack: (chain) {
         chain.module.rule('pug')
             .test(/\.pug$/)
             .use('pug-plain-loader')
