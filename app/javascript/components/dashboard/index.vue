@@ -44,8 +44,8 @@ export default {
         console.log('I am connected.')
       },
       received(data) {
-        console.log(data)
-        // this.$store.dispatch('orgs/update_orgs', data)
+        // console.log(data)
+        this.update_from_socket(data)
       },
     }
   },
@@ -57,7 +57,7 @@ export default {
   methods: {
     ...mapActions({
       getCurrentUser: "get_current_admin",
-      update_orgs: 'orgs/update_orgs'
+      update_from_socket: 'orgs/update_from_socket'
     }),
 
 

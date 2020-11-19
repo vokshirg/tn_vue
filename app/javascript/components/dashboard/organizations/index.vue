@@ -10,7 +10,7 @@
       :pagination.sync="initialPagination"
       :loading="loading"
       :filter="filter"
-      @request="onRequest"
+      @request="filterRequest"
       binary-state-sort
     )
 
@@ -60,11 +60,10 @@
             square
             :label="eq.name" )
 
-
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import paginationMixin from "@mixins/paginationMixin";
 export default {
   name: "AdminOrgs",
@@ -91,17 +90,13 @@ export default {
 
   mounted () {
     // get initial data from server (1st page)
-    this.onRequest({
+    this.filterRequest({
       pagination: this.initialPagination,
       filter: undefined
     })
   },
 
   computed: {
-    ...mapState({
-      // orgs: state => state.orgs.data
-    }),
-
     ...mapGetters({
       orgs: 'orgs/data'
     })
@@ -109,10 +104,11 @@ export default {
 
   methods: {
     ...mapActions({
-      fetchOrganizations: 'orgs/fetch'
+      fetchOrganizations: 'orgs/fetch',
+      orgRemove: 'orgs/remove_org'
     }),
 
-    async onRequest(props) {
+    async filterRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination
       this.loading = true
 
@@ -123,17 +119,6 @@ export default {
       this.initialPagination.rowsPerPage = rowsPerPage
       this.initialPagination.sortBy = sortBy
       this.initialPagination.descending = descending
-      this.loading = false
-    },
-
-    async orgRemove(organization) {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.destroy(organization)
-        this.fetchOrganizations()
-      } catch {
-        this.error = true
-      }
       this.loading = false
     },
 

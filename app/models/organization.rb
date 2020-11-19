@@ -10,8 +10,7 @@ class Organization < ApplicationRecord
   }
 
 
-  after_update { broadcast(:update) }
-  after_create { broadcast(:create) }
+  after_save { broadcast(:update) }
   after_destroy { broadcast(:destroy) }
 
 
@@ -23,6 +22,8 @@ class Organization < ApplicationRecord
   end
 
   def render_message(org)
-    JSON.parse ApplicationController.renderer.render(template: 'admin/organizations/show', assigns: { organization: org} )
+    JSON.parse ApplicationController.renderer.render(
+        template: 'admin/organizations/show',
+        assigns: { organization: org} )
   end
 end

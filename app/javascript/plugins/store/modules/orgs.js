@@ -12,18 +12,13 @@ export default {
             state.hash = organizations
         },
 
-        // changeOrg(state, content){
-        //     this.$cable.perform({
-        //         channel: 'OrganizationsChannel',
-        //         action: 'alert_smth',
-        //         data: {
-        //             content
-        //         }
-        //     })
-        // },
+        UPDATE_ORG: (state, org) => {
+            Vue.set(state.hash, org.id, org)
 
-        ADD_ORG: (state, payload) => {
-            state.hash.push(payload)
+        },
+
+        DESTROY_ORG: (state, id) => {
+            Vue.delete(state.hash, id)
         }
     },
 
@@ -80,13 +75,23 @@ export default {
                 })
         },
 
-        // update_orgs({ commit }, org) {
-        //     commit('changeOrg', org)
-        // },
+        update_from_socket({ commit }, payload) {
+            switch (payload.type) {
+                case 'update':
+                    return commit('UPDATE_ORG', payload.org)
+                case 'destroy':
+                    return commit('DESTROY_ORG', payload.id)
+            }
+        },
+
+        remove_org({ commit }, id) {
+            $api.admin.orgs.destroy(id)
+            commit('DESTROY_ORG', id)
+        },
 
         async add_org({ commit }, org) {
             const resp = await $api.admin.orgs.create(org)
-            commit('ADD_ORG', resp.data)
+            commit('UPDATE_ORG', resp.data)
         }
     }
 }

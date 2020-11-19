@@ -134,6 +134,8 @@ export default {
     async submitForm() {
       try {
         this.loading = true
+        console.log(this.form_data)
+
         this.form_data.client_ids = this.form_data.clients.map(client => client.id)
         this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
 
@@ -168,12 +170,12 @@ export default {
     },
   },
 
-  created() {
+  async created() {
     this.id = this.$route.params.id
-      if (this.id !== 'new' && !isNaN(this.id)) {
-        this.update = true
-        this.fetchOrgById(this.id).then((data) => { this.form_data = data })
-      }
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.update = true
+      Object.assign(this.form_data, await this.fetchOrgById(this.id))
+    }
 
     if (this.clients.length === 0 && this.equipments.length === 0) {
       this.fetchClients()

@@ -9,9 +9,7 @@ class Admin::OrganizationsController < ApplicationController
   def show; end
 
   def create
-    # random_pass = Random.hex(10)
     @organization = Organization.new(permitted_params)
-    # @organization.password = random_pass
 
     if @organization.save
       render json: @organization, status: :created
@@ -35,8 +33,6 @@ class Admin::OrganizationsController < ApplicationController
       render json: @organization.errors, status: :unprocessable_entity
     end
   end
-
-
 
   private
 
