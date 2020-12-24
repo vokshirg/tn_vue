@@ -35,23 +35,23 @@
 </template>
 
 <script>
-import paginationMixin from "@mixins/paginationMixin";
+import paginationMixin from '@mixins/paginationMixin'
 import { mapState, mapActions } from 'vuex'
 export default {
-  name: "AdminEquipments",
+  name: 'AdminEquipments',
   mixins: [paginationMixin],
-  data() {
+  data () {
     return {
       columns: [
-        {name: 'id', label: 'id', field: 'id'},
-        {name: 'name', label: 'name', field: 'name'},
-        {name: 'eq_type', label: 'eq_type', field: 'eq_type'},
-        {name: 'sn', label: 'sn', field: 'sn'},
-        {name: 'org', label: 'org', field: 'org'},
-        {name: 'actions', label: 'actions'},
+        { name: 'id', label: 'id', field: 'id' },
+        { name: 'name', label: 'name', field: 'name' },
+        { name: 'eq_type', label: 'eq_type', field: 'eq_type' },
+        { name: 'sn', label: 'sn', field: 'sn' },
+        { name: 'org', label: 'org', field: 'org' },
+        { name: 'actions', label: 'actions' }
       ],
       equipment_form_show: false,
-      loading: false,
+      loading: false
     }
   },
 
@@ -61,17 +61,19 @@ export default {
     })
   },
 
+  created () {
+    this.fetchEquipments()
+  },
 
   methods: {
     ...mapActions({
       fetchEquipments: 'equipments/fetch'
     }),
 
-
-    async equipmentRemove(equipment) {
+    async equipmentRemove (equipment) {
       this.loading = true
       try {
-        const response = await this.$api.admin.equipments.destroy(equipment)
+        await this.$api.admin.equipments.destroy(equipment)
         this.fetchEquipments()
       } catch {
         this.error = true
@@ -82,9 +84,6 @@ export default {
     formShow (id) {
       this.$router.push({ name: 'equipment', params: { id } })
     }
-  },
-  created() {
-    this.fetchEquipments()
-  },
+  }
 }
 </script>

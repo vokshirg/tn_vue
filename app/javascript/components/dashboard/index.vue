@@ -13,9 +13,6 @@
           q-route-tab( to='/admin/orgs' label='Организации' )
           q-route-tab( to='/admin/equipments' label='Оборудование' )
 
-    //q-drawer( show-if-above v-model="left" side="left" bordered )
-      // drawer content
-
     q-page-container( v-if="current_admin" )
       router-view
 
@@ -31,55 +28,35 @@ import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
 import { mapState, mapActions } from 'vuex'
 export default {
-  name: "Staff",
-  data () {
-    return {
-      loading: true,
-    }
+  name: 'Staff',
+
+  components: {
+    'shared-header': Navbar,
+    'shared-footer': Footer
   },
 
-  channels: {
-    OrganizationsChannel: {
-      connected() {
-        console.log('I am connected.')
-      },
-      received(data) {
-        // console.log(data)
-        this.update_from_socket(data)
-      },
+  data () {
+    return {
+      loading: true
     }
   },
 
   computed: {
-    ...mapState(["current_admin"])
+    ...mapState(['current_admin'])
   },
 
   methods: {
     ...mapActions({
-      getCurrentUser: "get_current_admin",
-      update_from_socket: 'orgs/update_from_socket'
+      getCurrentUser: 'get_current_admin'
     }),
 
-
-    logout() {
+    logout () {
       this.$api.admin.logout()
       this.admin = null
-    },
+      this.$router.replace('/admin/auth/login')
+    }
 
-  },
-
-  components: {
-    'shared-header': Navbar,
-    'shared-footer': Footer,
-  },
-
-  created() {
-    this.$cable.subscribe({
-      channel: 'OrganizationsChannel'
-    });
-  },
-
-
+  }
 }
 </script>
 

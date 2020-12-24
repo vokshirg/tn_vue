@@ -42,6 +42,6 @@ class Admin::ClientsController < ApplicationController
   end
 
   def permitted_params
-    params.require(:client).permit(:email, :fullname, :phone, organization_ids:[])
+    params.require(:client).permit(:email, :fullname, :phone, :password, :password_confirmation, organization_ids:[])
   end
 end

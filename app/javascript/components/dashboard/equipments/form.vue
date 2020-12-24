@@ -2,30 +2,30 @@
   q-dialog(v-model='equipment_form_show' @hide="clearForm")
     q-card(style='min-width: 450px')
       q-card-section
-        .text-h6 Добавить Оборудование
+        .text-h6 {{formTitle}}
       q-card-section.q-pt-none
-        form(@submit.prevent="submitForm")
+        form( @submit.prevent="submitForm" )
 
           q-input(
             dense
             v-model='form_data.name'
             hint='Название'
-            :rules="[ val => $v.form_data.name.minLength && $v.form_data.name.required || 'Required. Min length 5' ]")
+            :rules="[ () => $v.form_data.name.minLength && $v.form_data.name.required || 'Required. Min length 5' ]")
 
           q-select(
             dense
             v-model='form_data.eq_type'
             hint='Тип запчасти'
             :options="eq_types"
+            :rules="[ () => $v.form_data.eq_type.required || 'Required' ]"
             emit-value
-            :rules="[ val => $v.form_data.eq_type.required || 'Required' ]"
             map-options)
 
           q-input(
             dense
             v-model='form_data.sn'
             hint="Серийный номер"
-            :rules="[ val => $v.form_data.sn.between || 'Min sn length 10 - max 14' ]")
+            :rules="[ () => $v.form_data.sn.between || 'Min sn length 10 - max 14' ]")
 
           q-select(
             dense
@@ -37,17 +37,16 @@
 
           q-card-actions.text-primary(align='right')
             q-btn(flat label='Отменить' v-close-popup)
-            q-btn(type='submit' label='Добавить' color="primary")
-
+            q-btn(type='submit' :label="formBtn" color="primary")
 
 </template>
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: "equipmentForm",
+  name: 'EquipmentForm',
   data () {
     return {
       equipment_form_show: true,
@@ -63,20 +62,20 @@ export default {
       eq_types: [
         {
           label: 'Аггрегаты',
-          value: 'aggregates',
+          value: 'aggregates'
         },
         {
           label: 'Заменяемые',
-          value: 'removable',
+          value: 'removable'
         },
         {
           label: 'Мелкие',
-          value: 'small_parts',
+          value: 'small_parts'
         },
         {
           label: 'Другие',
-          value: 'other',
-        },
+          value: 'other'
+        }
       ]
     }
   },
@@ -85,7 +84,23 @@ export default {
     ...mapGetters({
       getEquipment: 'equipments/get_equipment',
       orgs: 'orgs/data'
-    })
+    }),
+
+    formTitle () {
+      if (this.update) {
+        return 'Обновить оборудование'
+      } else {
+        return 'Добавить оборудование'
+      }
+    },
+
+    formBtn () {
+      if (this.update) {
+        return 'Обновить'
+      } else {
+        return 'Добавить'
+      }
+    }
   },
 
   validations: {
@@ -105,6 +120,16 @@ export default {
     }
   },
 
+  created () {
+    this.id = this.$route.params.id
+    if (this.id !== 'new' && !isNaN(this.id)) {
+      this.fetchEquipmentById(this.id).then((data) => { this.form_data = data })
+      this.update = true
+    }
+
+    this.fetchOrgs()
+  },
+
   methods: {
     ...mapActions({
       fetchOrgs: 'orgs/fetch',
@@ -112,7 +137,7 @@ export default {
       fetchEquipmentById: 'equipments/fetch_equipments_by_id'
     }),
 
-    async submitForm() {
+    async submitForm () {
       try {
         this.loading = true
         this.form_data.organization_id = this.form_data.org.id
@@ -121,36 +146,25 @@ export default {
         } else {
           await this.addEquipment(this.form_data)
         }
-
       } catch (e) {
-        console.log(e);
+        console.log(e)
       } finally {
-
         this.loading = false
         this.equipment_form_show = false
       }
     },
 
-    clearForm() {
+    clearForm () {
       this.form_data = {
         email: '',
         name: '',
         sn: '',
-        organization_id: '',
+        organization_id: ''
       }
       this.update = false
       this.$router.push({ name: 'admin/equipments' })
-    },
-
-  },
-  created() {
-    this.id = this.$route.params.id
-    if (this.id !== 'new' && !isNaN(this.id)) {
-      this.fetchEquipmentById(this.id).then((data) => { this.form_data = data })
-      this.update = true
     }
 
-    this.fetchOrgs()
   }
 }
 </script>

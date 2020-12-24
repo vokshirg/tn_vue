@@ -64,36 +64,28 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import paginationMixin from "@mixins/paginationMixin";
+import paginationMixin from '@mixins/paginationMixin'
 export default {
-  name: "AdminOrgs",
+  name: 'AdminOrgs',
   mixins: [paginationMixin],
-  data() {
+  data () {
     return {
       columns: [
-        {name: 'id', label: 'id', field: 'id'},
-        {name: 'name', label: 'name', field: 'name'},
-        {name: 'inn', label: 'inn', field: 'inn'},
-        {name: 'ogrn', label: 'ogrn', field: 'ogrn'},
-        {name: 'org_type', label: 'org_type', field: 'org_type'},
-        {name: 'clients', label: 'Clients', field: 'clients'},
-        {name: 'equipments', label: 'Equipments', field: 'equipments'},
-        {name: 'actions', label: 'actions'},
+        { name: 'id', label: 'id', field: 'id' },
+        { name: 'name', label: 'name', field: 'name' },
+        { name: 'inn', label: 'inn', field: 'inn' },
+        { name: 'ogrn', label: 'ogrn', field: 'ogrn' },
+        { name: 'org_type', label: 'org_type', field: 'org_type' },
+        { name: 'clients', label: 'Clients', field: 'clients' },
+        { name: 'equipments', label: 'Equipments', field: 'equipments' },
+        { name: 'actions', label: 'actions' }
       ],
       initialPagination: {
         rowsNumber: 10
       },
       loading: false,
-      organization_form_show: false,
+      organization_form_show: false
     }
-  },
-
-  mounted () {
-    // get initial data from server (1st page)
-    this.filterRequest({
-      pagination: this.initialPagination,
-      filter: undefined
-    })
   },
 
   computed: {
@@ -102,13 +94,38 @@ export default {
     })
   },
 
+  channels: {
+    OrganizationsChannel: {
+      connected () {
+        console.log('I am connected.')
+      },
+      received (data) {
+        // console.log(data)
+        this.update_from_socket(data)
+      }
+    }
+  },
+
+  created () {
+    // get initial data from server (1st page)
+    this.filterRequest({
+      pagination: this.initialPagination,
+      filter: undefined
+    })
+
+    this.$cable.subscribe({
+      channel: 'OrganizationsChannel'
+    })
+  },
+
   methods: {
     ...mapActions({
       fetchOrganizations: 'orgs/fetch',
-      orgRemove: 'orgs/remove_org'
+      orgRemove: 'orgs/remove_org',
+      update_from_socket: 'orgs/update_from_socket'
     }),
 
-    async filterRequest(props) {
+    async filterRequest (props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination
       this.loading = true
 
@@ -122,13 +139,13 @@ export default {
       this.loading = false
     },
 
-    addNewOrganization(new_org_data) {
-      this.orgs.push(new_org_data)
+    addNewOrganization (newOrgData) {
+      this.orgs.push(newOrgData)
     },
 
     formShow (id) {
       this.$router.push({ name: 'org', params: { id } })
     }
-  },
+  }
 }
 </script>
