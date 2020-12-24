@@ -1,15 +1,18 @@
 <template lang="pug">
   q-page.q-pa-md
-    router-view( @update-table="fetchOrganizations" )
+    router-view
 
     q-table(
       title="Organizations"
       :data="orgs"
       :columns="columns"
-      :pagination="initialPagination"
       row-key="id"
+      :pagination.sync="initialPagination"
+      :loading="loading"
       :filter="filter"
-      :loading="loading")
+      @request="filterRequest"
+      binary-state-sort
+    )
 
       template( v-slot:top-right )
         q-input( borderless debounce="300" v-model="filter" placeholder="Поиск" )
@@ -57,22 +60,16 @@
             square
             :label="eq.name" )
 
-
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import paginationMixin from "@mixins/paginationMixin";
 export default {
   name: "AdminOrgs",
+  mixins: [paginationMixin],
   data() {
     return {
-      orgs: [],
-      initialPagination: {
-        sortBy: 'id',
-        descending: true,
-        page: 1,
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'name', label: 'name', field: 'name'},
@@ -83,31 +80,45 @@ export default {
         {name: 'equipments', label: 'Equipments', field: 'equipments'},
         {name: 'actions', label: 'actions'},
       ],
+      initialPagination: {
+        rowsNumber: 10
+      },
+      loading: false,
       organization_form_show: false,
-      filter: '',
     }
   },
 
-  methods: {
-    async fetchOrganizations () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
+  mounted () {
+    // get initial data from server (1st page)
+    this.filterRequest({
+      pagination: this.initialPagination,
+      filter: undefined
+    })
+  },
 
-    async orgRemove(organization) {
+  computed: {
+    ...mapGetters({
+      orgs: 'orgs/data'
+    })
+  },
+
+  methods: {
+    ...mapActions({
+      fetchOrganizations: 'orgs/fetch',
+      orgRemove: 'orgs/remove_org'
+    }),
+
+    async filterRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination
       this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.destroy(organization)
-        this.fetchOrganizations()
-      } catch {
-        this.error = true
-      }
+
+      await this.fetchOrganizations(props)
+
+      // don't forget to update local pagination object
+      this.initialPagination.page = page
+      this.initialPagination.rowsPerPage = rowsPerPage
+      this.initialPagination.sortBy = sortBy
+      this.initialPagination.descending = descending
       this.loading = false
     },
 
@@ -117,12 +128,7 @@ export default {
 
     formShow (id) {
       this.$router.push({ name: 'org', params: { id } })
-      // this.$refs.org_form_dialog.showDialog(org)
     }
-  },
-
-  created() {
-    this.fetchOrganizations()
   },
 }
 </script>

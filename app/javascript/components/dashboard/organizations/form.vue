@@ -61,15 +61,13 @@
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: "organizationForm",
   data (  ) {
     return {
       organization_form_show: true,
       update: false,
-      clients: [],
-      equipments: [],
       form_data: {
         id: '',
         inn: '',
@@ -94,6 +92,17 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      clients: state => state.clients.data,
+      equipments: state => state.equipments.data
+    }),
+
+    ...mapGetters({
+      getOrg: 'orgs/get_org',
+    }),
+  },
+
   validations: {
     form_data: {
       inn: {
@@ -114,19 +123,33 @@ export default {
   },
 
   methods: {
-    // showDialog(org) {
-    //   this.organization_form_show = true
-    //   if (org!==undefined) {
-    //     this.form_data = org
-    //     this.update = true
-    //   }
-    // },
+    ...mapActions({
+      fetchClients: 'clients/fetch',
+      fetchEquipments: 'equipments/fetch',
+      fetchOrgById: 'orgs/fetch_org_by_id',
+      addOrg: 'orgs/add_org',
+    }),
 
-    submitForm() {
-      if (this.update === true) {
-        this.updateOrganization()
-      } else {
-        this.createOrganization()
+
+    async submitForm() {
+      try {
+        this.loading = true
+        console.log(this.form_data)
+
+        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
+        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
+
+        if (this.update === true) {
+          await this.$api.admin.orgs.update(this.form_data)
+        } else {
+          await this.addOrg(this.form_data)
+        }
+
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.loading = false
+        this.organization_form_show = false
       }
     },
 
@@ -143,75 +166,22 @@ export default {
           equipment_ids: [],
       }
       this.update = false
-      this.$emit('update-table')
       this.$router.push({ name: 'admin/orgs' })
     },
-
-    async fetchClients () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.clients.index()
-        this.clients = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-    async fetchEquipments () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.equipments.index()
-        this.equipments = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-    async createOrganization () {
-      this.loading = true
-      try {
-        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
-        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
-        const response = await this.$api.admin.orgs.create(this.form_data)
-        this.clearForm()
-        this.organization_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async updateOrganization() {
-      this.loading = true
-      try {
-        this.form_data.client_ids = this.form_data.clients.map(client => client.id)
-        this.form_data.equipment_ids = this.form_data.equipments.map(equipment => equipment.id)
-        const response = await this.$api.admin.orgs.update(this.form_data)
-        // this.$emit('add-new-organization', response.data)
-        this.clearForm()
-        this.organization_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    getOrg (id) {
-      this.$api.admin.orgs.show(this.id)
-          .then(({ data }) => this.form_data = data )
-          .catch((e) => console.log(e))
-    }
   },
 
-  created() {
+  async created() {
     this.id = this.$route.params.id
     if (this.id !== 'new' && !isNaN(this.id)) {
-      this.getOrg()
       this.update = true
+      Object.assign(this.form_data, await this.fetchOrgById(this.id))
     }
 
-    this.fetchClients()
-    this.fetchEquipments()
+    if (this.clients.length === 0 && this.equipments.length === 0) {
+      this.fetchClients()
+      this.fetchEquipments()
+    }
+
   }
 }
 </script>

@@ -2,15 +2,14 @@ class Admin::OrganizationsController < ApplicationController
   before_action :set_org, only: [:show, :edit, :update, :destroy]
 
   def index
-    @organizations = Organization.all
+    @organizations = Organization.page(params[:page]).per(params[:per])
+    @organizations = @organizations.search_filter(params[:filter]) if params[:filter].present?
   end
 
   def show; end
 
   def create
-    # random_pass = Random.hex(10)
     @organization = Organization.new(permitted_params)
-    # @organization.password = random_pass
 
     if @organization.save
       render json: @organization, status: :created
@@ -34,8 +33,6 @@ class Admin::OrganizationsController < ApplicationController
       render json: @organization.errors, status: :unprocessable_entity
     end
   end
-
-
 
   private
 

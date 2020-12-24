@@ -3,16 +3,16 @@
     shared-header(
       title="Client app"
       @getuser="getCurrentUser"
-      :currentuser="client"
+      :currentuser="current_client"
       type="client"
       @logout="logout" )
 
     //q-drawer(show-if-above v-model="left" side="left" bordered)
       // drawer content
 
-    template( v-if="this.client" )
+    template( v-if="this.current_client" )
       q-page-container.q-py-none
-        router-view( :client="this.client" )
+        router-view( :client="this.current_client" )
 
 
     template( v-else )
@@ -55,15 +55,19 @@
 <script>
 import Navbar from '@shared/navbar'
 import Footer from '@shared/footer'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "Client",
   data () {
     return {
-      client: null,
       splitterModel: 10,
       // tab: 'mails',
     }
+  },
+
+  computed: {
+    ...mapState(["current_client"])
   },
 
   components: {
@@ -72,15 +76,9 @@ export default {
   },
 
   methods: {
-    async getCurrentUser() {
-      try {
-        const response = await this.$api.clients.current_user()
-        this.client = response.data
-        console.log(this.client)
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    ...mapActions({
+      getCurrentUser: "get_current_client"
+    }),
 
     logout () {
       this.$api.clients.logout()

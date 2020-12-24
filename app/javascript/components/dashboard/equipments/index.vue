@@ -1,6 +1,6 @@
 <template lang="pug">
   q-page.q-pa-md
-    router-view(@update-table="fetchEquipments")
+    router-view
 
     q-table(
       title="Equipments"
@@ -35,18 +35,13 @@
 </template>
 
 <script>
+import paginationMixin from "@mixins/paginationMixin";
+import { mapState, mapActions } from 'vuex'
 export default {
   name: "AdminEquipments",
+  mixins: [paginationMixin],
   data() {
     return {
-      equipments: [],
-      initialPagination: {
-        sortBy: 'id',
-        descending: true,
-        page: 1,
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
       columns: [
         {name: 'id', label: 'id', field: 'id'},
         {name: 'name', label: 'name', field: 'name'},
@@ -56,21 +51,22 @@ export default {
         {name: 'actions', label: 'actions'},
       ],
       equipment_form_show: false,
-      filter: '',
+      loading: false,
     }
   },
+
+  computed: {
+    ...mapState({
+      equipments: state => state.equipments.data
+    })
+  },
+
+
   methods: {
-    async fetchEquipments () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.equipments.index()
-        this.equipments = response.data
-        console.log(this.equipments)
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
+    ...mapActions({
+      fetchEquipments: 'equipments/fetch'
+    }),
+
 
     async equipmentRemove(equipment) {
       this.loading = true

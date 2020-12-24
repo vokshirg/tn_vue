@@ -29,7 +29,14 @@ const api = {
             show: (equipment_id) => axios.get('/admin/equipments/'+ equipment_id)
         },
         orgs: {
-            index: () => axios.get('/admin/organizations'),
+            index: (props) => axios.get('/admin/organizations',
+                {
+                    params: {
+                        page: props.pagination.page,
+                        per: props.pagination.rowsPerPage,
+                        filter: props.filter
+                    }
+                }),
             create: (organization) => axios.post('/admin/organizations', { organization }),
             update: (organization) => axios.put('/admin/organizations/'+ organization.id, { organization }),
             destroy: (organization) => axios.delete('/admin/organizations/'+ organization.id),

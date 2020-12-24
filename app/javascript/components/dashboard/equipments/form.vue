@@ -44,7 +44,7 @@
 
 <script>
 import { required, between, numeric, minLength } from 'vuelidate/lib/validators'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: "equipmentForm",
@@ -52,7 +52,6 @@ export default {
     return {
       equipment_form_show: true,
       update: false,
-      orgs: [],
       id: '',
       form_data: {
         name: '',
@@ -81,6 +80,14 @@ export default {
       ]
     }
   },
+
+  computed: {
+    ...mapGetters({
+      getEquipment: 'equipments/get_equipment',
+      orgs: 'orgs/data'
+    })
+  },
+
   validations: {
     form_data: {
       name: {
@@ -97,20 +104,30 @@ export default {
       }
     }
   },
-  methods: {
-    showDialog(equipment) {
-      this.equipment_form_show = true
-      if (equipment!==undefined) {
-        this.form_data = equipment
-        this.update = true
-      }
-    },
 
-    submitForm() {
-      if (this.update === true) {
-        this.updateEquipment()
-      } else {
-        this.createEquipment()
+  methods: {
+    ...mapActions({
+      fetchOrgs: 'orgs/fetch',
+      addEquipment: 'equipments/add_equipment',
+      fetchEquipmentById: 'equipments/fetch_equipments_by_id'
+    }),
+
+    async submitForm() {
+      try {
+        this.loading = true
+        this.form_data.organization_id = this.form_data.org.id
+        if (this.update === true) {
+          await this.$api.admin.equipments.update(this.form_data)
+        } else {
+          await this.addEquipment(this.form_data)
+        }
+
+      } catch (e) {
+        console.log(e);
+      } finally {
+
+        this.loading = false
+        this.equipment_form_show = false
       }
     },
 
@@ -119,65 +136,17 @@ export default {
         email: '',
         name: '',
         sn: '',
-        orgs: [],
         organization_id: '',
       }
       this.update = false
-      this.$emit('update-table')
       this.$router.push({ name: 'admin/equipments' })
     },
-
-
-    async fetchOrgs () {
-      this.loading = true
-      try {
-        const response = await this.$api.admin.orgs.index()
-        this.orgs = response.data
-      } catch {
-        this.error = true
-      }
-      this.loading = false
-    },
-
-
-    async createEquipment () {
-      this.loading = true
-      try {
-        console.log(this.form_data)
-        this.form_data.organization_id = this.form_data.org.id
-        const response = await this.$api.admin.equipments.create(this.form_data)
-        console.log(response)
-
-      } catch (e) {
-        console.log(e);
-      }
-      // this.clearForm()
-      this.equipment_form_show = false
-    },
-
-    async updateEquipment() {
-      this.loading = true
-      try {
-        this.form_data.organization_id = this.form_data.org.id
-        const response = await this.$api.admin.equipments.update(this.form_data)
-        // this.$emit('add-new-equipment', response.data)
-        this.clearForm()
-        this.equipment_form_show = false
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    getEquipment () {
-      this.$api.admin.equipments.show(this.id)
-          .then(({ data }) => this.form_data = data )
-          .catch((e) => console.log(e))
-    }
 
   },
   created() {
     this.id = this.$route.params.id
     if (this.id !== 'new' && !isNaN(this.id)) {
-      this.getEquipment()
+      this.fetchEquipmentById(this.id).then((data) => { this.form_data = data })
       this.update = true
     }
 
